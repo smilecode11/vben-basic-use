@@ -43,37 +43,37 @@ const transform: AxiosTransform = {
     if (!isTransformResponse) {
       return res.data;
     }
+    // console.log('_res', res);
     // 错误的时候返回
-
-    const { data } = res;
-    if (!data) {
-      // return '[HTTP] Request has no return value';
+    const { data: respData } = res;
+    if (!respData) {
       throw new Error(t('sys.api.apiRequestFailed'));
     }
+    // console.log('_data', respData);
+    // ******这里逻辑可以根据项目进行修改 *******
     //  这里 code，result，message为 后台统一的字段，需要在 types.ts内修改为项目自己的接口返回格式
-    const { code, result, message } = data;
-
-    // 这里逻辑可以根据项目进行修改
-    const hasSuccess = data && Reflect.has(data, 'code') && code === ResultEnum.SUCCESS;
+    const { errno, data, message } = respData;
+    // const hasSuccess = data && Reflect.has(data, 'code') && code === ResultEnum.SUCCESS;
+    const hasSuccess = data && errno === ResultEnum.SUCCESS;
+    console.log('_hasSuccess', hasSuccess, '_options', options);
     if (hasSuccess) {
       let successMsg = message;
-
+      // 不返回 message, 则进行默认操作
       if (isNull(successMsg) || isUnDef(successMsg) || isEmpty(successMsg)) {
         successMsg = t(`sys.api.operationSuccess`);
       }
-
       if (options.successMessageMode === 'modal') {
         createSuccessModal({ title: t('sys.api.successTip'), content: successMsg });
       } else if (options.successMessageMode === 'message') {
         createMessage.success(successMsg);
       }
-      return result;
+      return data;
     }
 
     // 在此处根据自己项目的实际情况对不同的code执行不同的操作
     // 如果不希望中断当前请求，请return数据，否则直接抛出异常即可
     let timeoutMsg = '';
-    switch (code) {
+    switch (errno) {
       case ResultEnum.TIMEOUT:
         timeoutMsg = t('sys.api.timeoutMessage');
         const userStore = useUserStoreWithOut();
@@ -228,13 +228,12 @@ function createAxios(opt?: Partial<CreateAxiosOptions>) {
     deepMerge(
       {
         // See https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#authentication_schemes
-        // authentication schemes，e.g: Bearer
-        // authenticationScheme: 'Bearer',
-        authenticationScheme: '',
+        // 认证方案，例如: Bearer
+        authenticationScheme: 'Bearer',
+        // 接口超时时间 单位毫秒
         timeout: 10 * 1000,
         // 基础接口地址
         // baseURL: globSetting.apiUrl,
-
         headers: { 'Content-Type': ContentTypeEnum.JSON },
         // 如果是form-data格式
         // headers: { 'Content-Type': ContentTypeEnum.FORM_URLENCODED },

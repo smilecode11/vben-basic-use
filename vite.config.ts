@@ -1,5 +1,8 @@
 import { defineApplicationConfig } from '@vben/vite-config';
 
+const NODE_ENV = process.env.NODE_ENV;
+console.log('_NODE_ENV', NODE_ENV);
+
 export default defineApplicationConfig({
   overrides: {
     optimizeDeps: {
@@ -17,10 +20,10 @@ export default defineApplicationConfig({
     server: {
       proxy: {
         '/basic-api': {
-          target: 'http://localhost:3000',
+          target: 'http://127.0.0.1:7001',
           changeOrigin: true,
           ws: true,
-          rewrite: (path) => path.replace(new RegExp(`^/basic-api`), ''),
+          rewrite: (path) => path.replace(new RegExp(`^/basic-api`), '/vben/api'),
           // only https
           // secure: false
         },
