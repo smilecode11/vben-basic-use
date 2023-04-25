@@ -31,7 +31,7 @@
       setOptions({
         legend: {
           bottom: 0,
-          data: ['Visits', 'Sales'],
+          data: ['Visits', 'Sales', 'custom'],
         },
         tooltip: {},
         radar: {
@@ -82,6 +82,13 @@
                 name: 'Sales',
                 itemStyle: {
                   color: '#67e0e3',
+                },
+              },
+              {
+                value: [100, 100, 100, 100, 100],
+                name: 'custom',
+                itemStyle: {
+                  color: 'skyblue',
                 },
               },
             ],
