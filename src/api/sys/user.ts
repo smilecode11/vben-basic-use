@@ -1,5 +1,13 @@
 import { defHttp } from '/@/utils/http/axios';
-import { LoginParams, LoginResultModel, GetUserInfoModel } from './model/userModel';
+import {
+  LoginParams,
+  LoginResultModel,
+  GetUserInfoModel,
+  SmsParams,
+  SmsModel,
+  ResetPasswordParams,
+  ResetPasswordModel,
+} from './model/userModel';
 
 import { ErrorMessageMode } from '/#/axios';
 
@@ -9,6 +17,8 @@ enum Api {
   GetUserInfo = '/getUserInfo',
   GetPermCode = '/getPermCode',
   TestRetry = '/testRetry',
+  sendSmsCode = '/getSms',
+  resetPassword = '/resetPassword',
 }
 
 /**
@@ -35,6 +45,36 @@ export function getUserInfo() {
 
 export function getPermCode() {
   return defHttp.get<string[]>({ url: Api.GetPermCode });
+}
+
+/**
+ * @description 发送验证码
+ */
+export function sendSmsCode(params: SmsParams) {
+  return defHttp.post<SmsModel>(
+    {
+      url: Api.sendSmsCode,
+      params,
+    },
+    {
+      errorMessageMode: 'message',
+    },
+  );
+}
+
+/**
+ * @description 重置密码
+ */
+export function resetPassword(params: ResetPasswordParams) {
+  return defHttp.post<ResetPasswordModel>(
+    {
+      url: Api.resetPassword,
+      params,
+    },
+    {
+      errorMessageMode: 'message',
+    },
+  );
 }
 
 export function doLogout() {

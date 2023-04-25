@@ -36,3 +36,25 @@ export interface GetUserInfoModel {
   // 介绍
   desc?: string;
 }
+
+/**
+ * @description 验证码模型
+ */
+export interface SmsModel {
+  smsCode: string | number;
+}
+
+export interface SmsParams {
+  account: string;
+  mobile: number | string;
+}
+
+/** 重置密码*/
+export interface ResetPasswordModel {
+  message?: string;
+  account?: string;
+}
+
+export type ResetPasswordParams = SmsParams & {
+  sms: string | number;
+};

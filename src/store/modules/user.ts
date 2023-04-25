@@ -6,8 +6,15 @@ import { RoleEnum } from '/@/enums/roleEnum';
 import { PageEnum } from '/@/enums/pageEnum';
 import { ROLES_KEY, TOKEN_KEY, USER_INFO_KEY } from '/@/enums/cacheEnum';
 import { getAuthCache, setAuthCache } from '/@/utils/auth';
-import { GetUserInfoModel, LoginParams } from '/@/api/sys/model/userModel';
-import { doLogout, getUserInfo, loginApi } from '/@/api/sys/user';
+import {
+  GetUserInfoModel,
+  LoginParams,
+  SmsModel,
+  SmsParams,
+  ResetPasswordModel,
+  ResetPasswordParams,
+} from '/@/api/sys/model/userModel';
+import { doLogout, getUserInfo, loginApi, sendSmsCode, resetPassword } from '/@/api/sys/user';
 import { useI18n } from '/@/hooks/web/useI18n';
 import { useMessage } from '/@/hooks/web/useMessage';
 import { router } from '/@/router';
@@ -139,6 +146,25 @@ export const useUserStore = defineStore({
       }
       this.setUserInfo(userInfo);
       return userInfo;
+    },
+    // 发送验证码
+    async sendSmsCodeAction(params: SmsParams): Promise<SmsModel | null> {
+      try {
+        const data = await sendSmsCode(params);
+        const { smsCode } = data;
+        console.log('_smsCode', smsCode);
+        return { smsCode };
+      } catch (error) {
+        return Promise.reject(error);
+      }
+    },
+    async resetPassword(params: ResetPasswordParams): Promise<ResetPasswordModel | null> {
+      try {
+        const data = await resetPassword(params);
+        return data;
+      } catch (error) {
+        return Promise.reject(error);
+      }
     },
     /**
      * @description: logout

@@ -99,6 +99,7 @@
   async function handleRegister() {
     const data = await validForm();
     if (!data) return;
-    console.log(data);
+    console.log('_handleRegister', formData, '_validForm', data);
+    // TODO: 注册调试
   }
 </script>

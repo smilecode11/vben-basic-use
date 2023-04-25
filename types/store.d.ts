@@ -40,6 +40,10 @@ export interface UserInfo {
   roles: RoleInfo[];
 }
 
+export interface Sms {
+  smsCode: string | number;
+}
+
 export interface BeforeMiniState {
   menuCollapsed?: boolean;
   menuSplit?: boolean;

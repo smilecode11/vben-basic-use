@@ -97,6 +97,7 @@ export const usePermissionStore = defineStore({
     },
     async changePermissionCode() {
       const codeList = await getPermCode();
+      console.log('_codeList', codeList);
       this.setPermCodeList(codeList);
     },
 
@@ -109,6 +110,7 @@ export const usePermissionStore = defineStore({
       let routes: AppRouteRecordRaw[] = [];
       const roleList = toRaw(userStore.getRoleList) || [];
       const { permissionMode = projectSetting.permissionMode } = appStore.getProjectConfig;
+      console.log('_permissionMode', permissionMode);
 
       // 路由过滤器 在 函数filter 作为回调传入遍历使用
       const routeFilter = (route: AppRouteRecordRaw) => {
@@ -210,7 +212,9 @@ export const usePermissionStore = defineStore({
           let routeList: AppRouteRecordRaw[] = [];
           try {
             await this.changePermissionCode();
-            routeList = (await getMenuList()) as AppRouteRecordRaw[];
+            const menuList = (await getMenuList()) as AppRouteRecordRaw[];
+            console.log('_menuList', menuList);
+            routeList = menuList;
           } catch (error) {
             console.error(error);
           }
