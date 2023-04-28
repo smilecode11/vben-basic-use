@@ -25,6 +25,13 @@
       <a-button @click="handleDistrictSearch">区域掩模(展示温州)</a-button>
       <a-button @click="drawPolygon">绘制覆盖物</a-button>
       <a-button @click="mapAddListener">map 添加多个 marker</a-button>
+      <a-button @click="addImageLayer">添加图片图层</a-button>
+      <a-button @click="addCanvasLayer">添加Canvas图层</a-button>
+      <a-button @click="showHots">显示热力图</a-button>
+      <a-button @click="customSvg">自定义图层 - SVG</a-button>
+      <a-button @click="custom3DTiles">3DTiles</a-button>
+      <a-button @click="customCanvasLayer">自定义Canvas图层</a-button>
+      <a-button @click="customTileLayerFlexible">模拟水印</a-button>
       <a-button @click="resetMap">重置</a-button>
     </div>
   </PageWrapper>
@@ -34,6 +41,7 @@
   import { defineComponent } from 'vue';
   import { PageWrapper } from '/@/components/Page';
   import { message } from 'ant-design-vue';
+  import { heatmapData } from './heatmapData';
 
   export default defineComponent({
     components: {
@@ -66,6 +74,234 @@
       this.destoryMap();
     },
     methods: {
+      customTileLayerFlexible() {
+        let layer = new AMap.TileLayer.Flexible({
+          cacheSize: 30,
+          opacity: 0.3,
+          createTile: function (x, y, z, success, fail) {
+            if ((x + y) % 3) {
+              fail();
+              return;
+            }
+            var img = document.createElement('img');
+            img.onload = function () {
+              success(img);
+            };
+            img.crossOrigin = 'anonymous'; // 必须添加，同时图片要有跨域头
+            img.onerror = function () {
+              fail();
+            };
+
+            img.src = 'https://a.amap.com/jsapi_demos/static/images/amap.png';
+          },
+        });
+
+        this.map.addLayer(layer);
+      },
+      customCanvasLayer() {
+        this.map.setZoom(5);
+        this.map.setCenter([116.306206, 39.975468]);
+        function getData(callback) {
+          var search = new AMap.DistrictSearch();
+          search.search('中国', function (status, data) {
+            if (status === 'complete') {
+              var positions = [];
+              var provinces = data['districtList'][0]['districtList'];
+              for (var i = 0; i < provinces.length; i += 1) {
+                positions.push({
+                  center: provinces[i].center,
+                  radius: Math.max(2, Math.floor(Math.random() * 10)),
+                });
+              }
+              callback(positions);
+            }
+          });
+        }
+        const addLayer = (positions) => {
+          var canvas = document.createElement('canvas');
+          var customLayer = new AMap.CustomLayer(canvas, {
+            zooms: [3, 10],
+            zIndex: 120,
+          });
+          var onRender = () => {
+            var retina = AMap.Browser.retina;
+            var size = this.map.getSize(); //resize
+            var width = size.width;
+            var height = size.height;
+            canvas.style.width = width + 'px';
+            canvas.style.height = height + 'px';
+            if (retina) {
+              //高清适配
+              width *= 2;
+              height *= 2;
+            }
+            canvas.width = width;
+            canvas.height = height; //清除画布
+            var ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#08f';
+            ctx.strokeStyle = '#fff';
+            ctx.beginPath();
+            for (var i = 0; i < positions.length; i += 1) {
+              var center = positions[i].center;
+              var pos = this.map.lngLatToContainer(center);
+              var r = positions[i].radius;
+              if (retina) {
+                pos = pos.multiplyBy(2);
+                // pos.x *= 2;
+                // pos.y *= 2;
+                r *= 2;
+              }
+              ctx.moveTo(pos.x + r, pos.y);
+              ctx.arc(pos.x, pos.y, r, 0, 2 * Math.PI);
+            }
+            ctx.lineWidth = retina ? 6 : 3;
+            ctx.closePath();
+            ctx.stroke();
+            ctx.fill();
+          };
+          customLayer.render = onRender;
+          customLayer.setMap(this.map);
+        };
+        getData(addLayer);
+      },
+      custom3DTiles() {
+        this.map.setCenter([121.502325, 31.238165]);
+        this.map.setPitch(90);
+        this.map.setRotation(-50);
+        this.map.setFeatures(['bg', 'road']);
+        this.map.setMapStyle('amap://styles/darkblue');
+        // 创建 3DTilesLayer
+        new AMap['3DTilesLayer']({
+          map: this.map,
+          url: 'https://a.amap.com/jsapi_demos/static/data3d/single.json', // 3d Tiles 入口文件
+          style: {
+            light: {
+              color: 'rgb(44,59,75)', // 设置光照颜色
+              intensity: 2, // 设置光照强度
+            },
+          },
+        });
+      },
+      customSvg() {
+        var starCenter = [116.306206, 39.975468];
+        this.map.setCenter(starCenter);
+
+        var size = this.map.getSize();
+        var canvas = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        canvas.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+        canvas.setAttribute('width', size.width);
+        canvas.setAttribute('height', size.height);
+
+        var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.onclick = function () {
+          console.log('svg path clicked');
+        };
+        var styleText = [];
+        styleText.push('stroke:red');
+        styleText.push('fill:green');
+        styleText.push('fill-opacity:0.3');
+        path.style.cssText = styleText.join(';');
+
+        canvas.appendChild(path);
+        var customLayer = new AMap.CustomLayer(canvas, {
+          // zooms: [3, 8],
+          // alwaysRender:true,
+          zIndex: 300,
+        });
+        customLayer.render = onRender;
+        customLayer.setMap(this.map);
+
+        const buildPath = () => {
+          var path = [];
+          var center = this.map.lngLatToContainer(starCenter);
+
+          for (let k = 0; k < 6; k += 1) {
+            var ag = ((Math.PI * 60) / 180) * k;
+            var x = center.x + Math.cos(ag) * 50;
+            var y = center.y + Math.sin(ag) * 50;
+            path.push((k == 0 ? 'M' : 'L') + x + ' ' + y);
+          }
+          return path.join(' ') + ' Z';
+        };
+
+        function onRender() {
+          //更新路径
+          var newPath = buildPath();
+          path.setAttribute('d', newPath);
+        }
+      },
+      showHots() {
+        if (!isSupportCanvas()) {
+          alert(
+            '热力图仅对支持canvas的浏览器适用,您所使用的浏览器不能使用热力图功能,请换个浏览器试试~',
+          );
+        }
+        //详细的参数,可以查看heatmap.js的文档 http://www.patrick-wied.at/static/heatmapjs/docs.html
+        var heatmap;
+
+        //初始化heatmap对象
+        heatmap = new AMap.HeatMap(this.map, {
+          radius: 25, //给定半径
+          opacity: [0, 0.8],
+        });
+        //设置数据集：该数据为北京部分“公园”数据
+        heatmap.setDataSet({
+          data: heatmapData,
+          max: 100,
+        });
+
+        setTimeout(() => {
+          this.map.setCenter([116.191031, 39.988585]);
+          this.map.setZoom(10);
+
+          heatmap.show();
+        }, 1500);
+
+        function isSupportCanvas() {
+          var elem = document.createElement('canvas');
+          return !!(elem.getContext && elem.getContext('2d'));
+        }
+      },
+      addCanvasLayer() {
+        var canvas = document.createElement('canvas');
+        canvas.width = canvas.height = 200;
+        var context = canvas.getContext('2d');
+        context.fillStyle = 'rgb(0,100,255)';
+        context.strokeStyle = 'white';
+        context.globalAlpha = 1;
+        context.lineWidth = 2;
+
+        var radious = 0;
+        var draw = function () {
+          context.clearRect(0, 0, 200, 200);
+          context.globalAlpha = (context.globalAlpha - 0.01 + 1) % 1;
+          radious = (radious + 1) % 100;
+          context.beginPath();
+          context.arc(100, 100, radious, 0, 2 * Math.PI);
+          context.fill();
+          context.stroke();
+          // 刷新渲染图层
+          CanvasLayer.reFresh();
+          AMap.Util.requestAnimFrame(draw);
+        };
+
+        var CanvasLayer = new AMap.CanvasLayer({
+          canvas: canvas,
+          bounds: new AMap.Bounds([120.685246, 27.984694], [120.687704, 27.983079]),
+          zooms: [10, 20],
+        });
+
+        draw();
+        this.map.addLayer(CanvasLayer);
+      },
+      addImageLayer() {
+        var imageLayer = new AMap.ImageLayer({
+          url: 'https://amappc.cn-hangzhou.oss-pub.aliyun-inc.com/lbs/static/img/dongwuyuan.jpg',
+          bounds: new AMap.Bounds([120.685246, 27.984694], [120.687704, 27.983079]),
+          zooms: [10, 20], //  设置可见图层
+        });
+        this.map.add(imageLayer);
+      },
       resetMap() {
         this.destoryMap();
         this.initMap();
