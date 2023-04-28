@@ -10,6 +10,10 @@
     />
     <title><%= VITE_GLOB_APP_TITLE %></title>
     <link rel="icon" href="/favicon.ico" />
+    <link
+      rel="stylesheet"
+      href="https://a.amap.com/jsapi_demos/static/demo-center/css/demo-center.css"
+    />
   </head>
   <body>
     <div id="app">
@@ -149,5 +153,11 @@
       </div>
     </div>
     <script type="module" src="/src/main.ts"></script>
+    <script type="text/javascript">
+      window._AMapSecurityConfig = {
+        securityJsCode: '472cb71bf261c059c56a73ea71324cb7',
+      };
+    </script>
+    <script src="https://webapi.amap.com/maps?v=2.0&key=ccc60be0df40131454501ae4f8fca05f&plugin=AMap.PlaceSearch,AMap.InfoWindow,AMap.ToolBar,AMap.Scale,AMap.HawkEye,AMap.ControlBar,AMap.DistrictSearch,AMap.Polygon,AMape.Circl"></script>
   </body>
 </html>

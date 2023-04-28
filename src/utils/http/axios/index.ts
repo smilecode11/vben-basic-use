@@ -55,7 +55,7 @@ const transform: AxiosTransform = {
     const { errno, data, message } = respData;
     // const hasSuccess = data && Reflect.has(data, 'code') && code === ResultEnum.SUCCESS;
     const hasSuccess = data && errno === ResultEnum.SUCCESS;
-    console.log('_hasSuccess', hasSuccess, '_options', options);
+    // console.log('_hasSuccess', hasSuccess, '_options', options);
     if (hasSuccess) {
       let successMsg = message;
       // 不返回 message, 则进行默认操作
