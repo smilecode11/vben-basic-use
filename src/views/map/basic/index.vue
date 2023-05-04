@@ -2,6 +2,7 @@
   <PageWrapper :contentStyle="{ margin: 0 }">
     <div id="container"></div>
     <div id="list"></div>
+    <div id="walking"></div>
     <div class="opera">
       <a-button @click="setCenter">随机中心点</a-button>
       <a-button @click="getCity">获取当前行政区</a-button>
@@ -92,6 +93,12 @@
         @search="searchPOI"
       />
     </div>
+    <a-divider orientation="left">数学计算/路线规划</a-divider>
+    <a-button @click="countDistance">距离计算</a-button>
+    <a-button @click="drivingWalking">路线规划(步行)</a-button>
+    <a-button @click="driving">路线规划(驾车)</a-button>
+    <a-button @click="drivingRiding">路线规划(骑行)</a-button>
+    <a-button @click="drivingTransfer">路线规划(公交车)</a-button>
   </PageWrapper>
 </template>
 
@@ -147,6 +154,159 @@
       this.destoryMap();
     },
     methods: {
+      drivingTransfer() {
+        var transOptions = {
+          map: this.map,
+          city: '温州',
+          panel: 'walking',
+          policy: AMap.TransferPolicy.LEAST_TIME,
+        };
+        //构造公交换乘类
+        var transfer = new AMap.Transfer(transOptions);
+        transfer.search(
+          [
+            { keyword: '金都花园', city: '温州' },
+            { keyword: '德信大发麓湖湾', city: '温州' },
+          ],
+          function (status, result) {
+            // result即是对应的公交路线数据信息，相关数据结构文档请参考  https://lbs.amap.com/api/javascript-api/reference/route-search#m_TransferResult
+            if (status === 'complete') {
+              console.log('绘制公交路线完成', result);
+            } else {
+              console.log('公交路线数据查询失败' + result);
+            }
+          },
+        );
+        //根据起、终点坐标查询公交换乘路线
+        // transfer.search(
+        //   new AMap.LngLat(116.291035, 39.907899),
+        //   new AMap.LngLat(116.427281, 39.903719),
+        //   function (status, result) {
+        //     // result即是对应的公交路线数据信息，相关数据结构文档请参考  https://lbs.amap.com/api/javascript-api/reference/route-search#m_TransferResult
+        //     if (status === 'complete') {
+        //       console.log('绘制公交路线完成', result);
+        //     } else {
+        //       console.log('公交路线数据查询失败' + result);
+        //     }
+        //   },
+        // );
+      },
+      drivingRiding() {
+        //骑行导航
+        var riding = new AMap.Riding({
+          map: this.map,
+          panel: 'walking',
+        });
+        riding.search(
+          [
+            { keyword: '金都花园', city: '温州' },
+            { keyword: '德信大发麓湖湾', city: '温州' },
+          ],
+          function (status, result) {
+            // result即是对应的骑行路线数据信息，相关数据结构文档请参考  https://lbs.amap.com/api/javascript-api/reference/route-search#m_RidingResult
+            if (status === 'complete') {
+              console.log('绘制骑行路线完成', result);
+            } else {
+              console.log('骑行路线数据查询失败' + result);
+            }
+          },
+        );
+        //根据起终点坐标规划骑行路线
+        // riding.search([116.397933, 39.844818], [116.440655, 39.878694], function (status, result) {
+        //   // result即是对应的骑行路线数据信息，相关数据结构文档请参考  https://lbs.amap.com/api/javascript-api/reference/route-search#m_RidingResult
+        //   if (status === 'complete') {
+        //     console.log('绘制骑行路线完成', result);
+        //   } else {
+        //     console.log('骑行路线数据查询失败' + result);
+        //   }
+        // });
+      },
+      driving() {
+        //构造路线导航类
+        var driving = new AMap.Driving({
+          map: this.map,
+          panel: 'walking',
+        });
+        driving.search(
+          [
+            { keyword: '站前东小区', city: '温州' },
+            { keyword: '火车站', city: '温州' },
+          ],
+          function (status, result) {
+            // result 即是对应的驾车导航信息，相关数据结构文档请参考  https://lbs.amap.com/api/javascript-api/reference/route-search#m_DrivingResult
+            if (status === 'complete') {
+              console.log('绘制驾车路线完成', result);
+            } else {
+              console.log('获取驾车数据失败：' + result);
+            }
+          },
+        );
+        // 根据起终点经纬度规划驾车导航路线
+        // driving.search(
+        //   new AMap.LngLat(116.379028, 39.865042),
+        //   new AMap.LngLat(116.427281, 39.903719),
+        //   function (status, result) {
+        //     // result 即是对应的驾车导航信息，相关数据结构文档请参考  https://lbs.amap.com/api/javascript-api/reference/route-search#m_DrivingResult
+        //     if (status === 'complete') {
+        //       console.log('绘制驾车路线完成');
+        //     } else {
+        //       console.log('获取驾车数据失败：' + result);
+        //     }
+        //   },
+        // );
+      },
+      drivingWalking() {
+        var walking = new AMap.Walking({
+          map: this.map,
+          panel: 'walking',
+        });
+
+        // 根据地点关键字
+        walking.search(
+          [
+            { keyword: '站前东小区', city: '温州' },
+            { keyword: '火车站', city: '温州' },
+          ],
+          function (status, result) {
+            // result即是对应的步行路线数据信息，相关数据结构文档请参考  https://lbs.amap.com/api/javascript-api/reference/route-search#m_WalkingResult
+            if (status === 'complete') {
+              console.log('绘制步行路线完成');
+            } else {
+              console.log('步行路线数据查询失败' + result);
+            }
+          },
+        );
+        //  根据起终点坐标规划步行路线
+        // walking.search([116.399028, 39.845042], [116.436281, 39.880719], function (status, result) {
+        //   // result即是对应的步行路线数据信息，相关数据结构文档请参考  https://lbs.amap.com/api/javascript-api/reference/route-search#m_WalkingResult
+        //   if (status === 'complete') {
+        //     console.log('绘制步行路线完成');
+        //   } else {
+        //     console.log('步行路线数据查询失败' + result);
+        //   }
+        // });
+      },
+      countDistance() {
+        const geometryUtil = AMap.GeometryUtil;
+        const distance = geometryUtil.distance([120.688629, 27.985391], [120.690147, 27.985376]);
+        message.success(`计算两经纬度距离是${distance}米`);
+        // https://lbs.amap.com/api/javascript-api/reference/math
+        // ringArea 计算一经纬度路径围区域实际面积, 单位平米
+        // distanceOfLine(ring:[LngLat]) 计算一经纬度路径的实际长度
+        // ringRingClip(ring:[LngLat],ring:[LngLat]) 计算两个经纬度面的交叉区域面积
+        // doesRingRingIntersect(ring:[LngLat],ring:[LngLat]) 判断两个经纬度面是否交叉
+        // doesLineRingIntersect(line:[LngLat],ring:[LngLat]) 判断经纬度路径和经纬度面是否交叉
+        // doesLineLineIntersect(line:[LngLat],line:[LngLat]) 判断两个经纬度路径是否相交
+        // doesSegmentPolygonIntersect(p1:LngLat, p2:LngLat, rings:[ring[LngLat]]) 判断线段和多个经纬度面是否相交
+        // doesSegmentRingIntersect(p1:LngLat, p2:LngLat, ring：[LngLat]) 判断一个线和一个环是否相交
+        // doesSegmentLineIntersect(p1:LngLat, p2:LngLat, line：[LngLat]) 判断一个线段和一个路径是否相交
+        // doesSegmentsIntersect(p1:LngLat, p2:LngLat,p3:LngLat, p4:LngLat) 判断两个线段是否相交
+        // isPointInRing(p:LngLat,ring:[LngLat]) * 判断点是否在环内
+        // closestOnLine(p:LngLat, line:[LngLat]) 计算line上距离P最近的点
+        // distanceToSegment(p1:LngLat, p2:LngLat,p3:LngLat) 计算P2P3到P1的距离。单位：米
+        // distanceToLine(p:LngLat, line:[LngLat]) * 计算P到line的距离。单位：米
+        // isPointOnLine(p:LngLat, line:[LngLat],tolerance:Number) * 判断P是否在line上，tolerance为误差范围
+      },
       initCurrPosition() {
         const geolocation = new AMap.Geolocation({
           GeoLocationFirst: true,
@@ -2403,7 +2563,8 @@
     min-height: 50vh;
   }
 
-  #list {
+  #list,
+  #walking {
     position: fixed;
     top: 100px;
     right: 100px;
