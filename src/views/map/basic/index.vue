@@ -2,7 +2,6 @@
   <PageWrapper :contentStyle="{ margin: 0 }">
     <div id="container"></div>
     <div id="list"></div>
-    <div id="walking"></div>
     <div class="opera">
       <a-button @click="setCenter">随机中心点</a-button>
       <a-button @click="getCity">获取当前行政区</a-button>
@@ -71,7 +70,7 @@
       <a-button @click="drawPolygonEditor">多边形编辑器吸附功能</a-button>
       <a-button @click="infoWindowOpera">信息窗体</a-button>
       <a-button @click="rightmenu">右键菜单</a-button>
-      <a-divider orientation="left">搜索服务</a-divider>
+      <a-divider orientation="left">服务</a-divider>
       <a-input-search
         v-model:value="searchValue"
         placeholder="input search text"
@@ -93,7 +92,6 @@
         @search="searchPOI"
       />
     </div>
-    <a-divider orientation="left">数学计算/路线规划</a-divider>
     <a-button @click="countDistance">距离计算</a-button>
     <a-button @click="drivingWalking">路线规划(步行)</a-button>
     <a-button @click="driving">路线规划(驾车)</a-button>
@@ -155,10 +153,11 @@
     },
     methods: {
       drivingTransfer() {
+        this.initMap();
         var transOptions = {
           map: this.map,
           city: '温州',
-          panel: 'walking',
+          panel: 'list',
           policy: AMap.TransferPolicy.LEAST_TIME,
         };
         //构造公交换乘类
@@ -192,10 +191,11 @@
         // );
       },
       drivingRiding() {
+        this.initMap();
         //骑行导航
         var riding = new AMap.Riding({
           map: this.map,
-          panel: 'walking',
+          panel: 'list',
         });
         riding.search(
           [
@@ -222,10 +222,11 @@
         // });
       },
       driving() {
+        this.initMap();
         //构造路线导航类
         var driving = new AMap.Driving({
           map: this.map,
-          panel: 'walking',
+          panel: 'list',
         });
         driving.search(
           [
@@ -256,9 +257,10 @@
         // );
       },
       drivingWalking() {
+        this.initMap();
         var walking = new AMap.Walking({
           map: this.map,
-          panel: 'walking',
+          panel: 'list',
         });
 
         // 根据地点关键字
@@ -2567,10 +2569,10 @@
   #walking {
     position: fixed;
     top: 100px;
-    right: 100px;
+    right: 50px;
     width: 280px;
     height: 45vh;
-    overflow: hidden;
+    overflow-x: hidden;
     overflow-y: auto;
   }
 </style>
