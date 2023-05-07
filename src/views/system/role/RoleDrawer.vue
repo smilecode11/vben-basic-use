@@ -28,7 +28,7 @@
   import { BasicDrawer, useDrawerInner } from '/@/components/Drawer';
   import { BasicTree, TreeItem } from '/@/components/Tree';
 
-  import { getMenuList } from '/@/api/demo/system';
+  import { getMenuList, createRole, editorRole } from '/@/api/demo/system';
 
   export default defineComponent({
     name: 'RoleDrawer',
@@ -38,7 +38,17 @@
       const isUpdate = ref(true);
       const treeData = ref<TreeItem[]>([]);
 
-      const [registerForm, { resetFields, setFieldsValue, validate }] = useForm({
+      const [
+        registerForm,
+        {
+          resetFields,
+          setFieldsValue,
+          getFieldsValue,
+          appendSchemaByField,
+          removeSchemaByField,
+          validate,
+        },
+      ] = useForm({
         labelWidth: 90,
         baseColProps: { span: 24 },
         schemas: formSchema,
@@ -50,11 +60,29 @@
         setDrawerProps({ confirmLoading: false });
         // 需要在setFieldsValue之前先填充treeData，否则Tree组件可能会报key not exist警告
         if (unref(treeData).length === 0) {
-          treeData.value = (await getMenuList()) as any as TreeItem[];
+          // TODO: 获取菜单列表
+          // treeData.value = (await getMenuList()) as any as TreeItem[];
         }
         isUpdate.value = !!data?.isUpdate;
 
         if (unref(isUpdate)) {
+          //  编辑时, 添加 id 字段
+          removeSchemaByField('id'); //  清除字段
+          appendSchemaByField(
+            {
+              field: 'id',
+              label: '角色ID',
+              required: true,
+              component: 'Input',
+              componentProps: {
+                disabled: true,
+                defaultValue: data.record.id,
+              },
+            },
+            undefined,
+            true,
+          );
+          //  表单赋值
           setFieldsValue({
             ...data.record,
           });
@@ -67,10 +95,15 @@
         try {
           const values = await validate();
           setDrawerProps({ confirmLoading: true });
-          // TODO custom api
-          console.log(values);
-          closeDrawer();
-          emit('success');
+          // 角色保存操作
+          console.log('_values', values, '_filedValue', getFieldsValue());
+          try {
+            !unref(isUpdate) ? await createRole(values) : await editorRole(values);
+            closeDrawer();
+            emit('success');
+          } catch (error) {
+            console.log('role save eror', error);
+          }
         } finally {
           setDrawerProps({ confirmLoading: false });
         }

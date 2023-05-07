@@ -15,11 +15,11 @@ export const columns: BasicColumn[] = [
     dataIndex: 'roleValue',
     width: 180,
   },
-  {
-    title: '排序',
-    dataIndex: 'orderNo',
-    width: 50,
-  },
+  // {
+  //   title: '排序',
+  //   dataIndex: 'orderNo',
+  //   width: 50,
+  // },
   {
     title: '状态',
     dataIndex: 'status',
@@ -29,13 +29,13 @@ export const columns: BasicColumn[] = [
         record.pendingStatus = false;
       }
       return h(Switch, {
-        checked: record.status === '1',
+        checked: record.status === '0',
         checkedChildren: '已启用',
         unCheckedChildren: '已禁用',
         loading: record.pendingStatus,
         onChange(checked: boolean) {
           record.pendingStatus = true;
-          const newStatus = checked ? '1' : '0';
+          const newStatus = checked ? '0' : '1';
           const { createMessage } = useMessage();
           setRoleStatus(record.id, newStatus)
             .then(() => {
@@ -56,6 +56,9 @@ export const columns: BasicColumn[] = [
     title: '创建时间',
     dataIndex: 'createTime',
     width: 180,
+    customRender: ({ record }) => {
+      return h('span', record.createdAt);
+    },
   },
   {
     title: '备注',
@@ -65,7 +68,7 @@ export const columns: BasicColumn[] = [
 
 export const searchFormSchema: FormSchema[] = [
   {
-    field: 'roleNme',
+    field: 'roleName',
     label: '角色名称',
     component: 'Input',
     colProps: { span: 8 },
