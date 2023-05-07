@@ -75,7 +75,8 @@
           address: '地区：浙江省温州市鹿城区绣山路321号',
           lng: '120.699279',
           lat: '27.993849',
-          type: 'search',
+          // type: 'address,distance',
+          type: 'address',
         });
       },
       confirmBySearchAddress(data) {
