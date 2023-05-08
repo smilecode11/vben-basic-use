@@ -13,9 +13,10 @@ enum Api {
   AccountList = '/system/getAccountList',
   DeptList = '/system/getDeptList',
   MenuList = '/system/getMenuList',
-  RoleListByPage = '/system/getRoleListByPage',
+  RoleListByPage = '/system/getRoles',
   GetAllRoleList = '/system/getAllRoleList',
   SetRoleStatus = '/system/setRoleStatus',
+  DeleteRole = '/system/deleteRole',
 }
 
 /**
@@ -70,4 +71,13 @@ export const setRoleStatus = (id: number, status: string) =>
   defHttp.post({
     url: Api.SetRoleStatus,
     params: { id, status },
+  });
+
+/**
+ * @description 删除角色
+ */
+export const deleteRole = ({ id }: { id: string }) =>
+  defHttp.post({
+    url: Api.DeleteRole,
+    params: { id },
   });

@@ -86,6 +86,8 @@
           setFieldsValue({
             ...data.record,
           });
+        } else {
+          removeSchemaByField('id'); //  清除字段
         }
       });
 
