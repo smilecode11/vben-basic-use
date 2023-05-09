@@ -14,7 +14,7 @@ export const AMapload = () => {
   return AMapLoader.load({
     key: 'ccc60be0df40131454501ae4f8fca05f', // 申请好的Web端开发者Key，首次调用 load 时必填
     version: '2.0', // 指定要加载的 JSAPI 的版本，缺省时默认为 1.4.15
-    plugins: ['AMap.ToolBar', 'AMap.Scale', 'AMap.HawkEye'], // 插件列表, https://lbs.amap.com/api/javascript-api-v2/guide/abc/plugins-list
+    plugins: ['AMap.ToolBar', 'AMap.Scale', 'AMap.HawkEye', 'AMap.MouseTool'], // 插件列表, https://lbs.amap.com/api/javascript-api-v2/guide/abc/plugins-list
   });
   // 错误码, https://lbs.amap.com/api/javascript-api-v2/guide/abc/errorcode
 };
