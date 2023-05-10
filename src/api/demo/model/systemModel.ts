@@ -60,15 +60,6 @@ export interface RoleListItem {
   createTime: string;
 }
 
-export interface CreateRoleParams {
-  roleName: string;
-  roleValue: string;
-  status: number;
-  orderNo: string;
-  remark: string;
-  menu: string;
-}
-
 /**
  * @description: Request list return value
  */
@@ -81,7 +72,3 @@ export type MenuListGetResultModel = BasicFetchResult<MenuListItem>;
 export type RolePageListGetResultModel = BasicFetchResult<RoleListItem>;
 
 export type RoleListGetResultModel = RoleListItem[];
-
-export type CreateRoleResultModel = {
-  id: string | number;
-};

@@ -6,17 +6,26 @@ import {
   RolePageParams,
   RoleListGetResultModel,
   RolePageListGetResultModel,
+  CreateRoleParams,
+  CreateRoleResultModel,
 } from './model/roleModel';
 import { MenuParams, MenuListGetResultModel } from './model/menuModel';
 
 enum Api {
   AccountList = '/system/getAccountList',
   DeptList = '/system/getDeptList',
-  MenuList = '/system/getMenuList',
   RoleListByPage = '/system/getRoles',
-  GetAllRoleList = '/system/getAllRoleList',
   SetRoleStatus = '/system/setRoleStatus',
+  RolePageList = '/system/getRoles',
+  GetAllRoleList = '/system/getAllRoleList',
+  createRole = '/system/createRole',
   DeleteRole = '/system/deleteRole',
+  editorRole = '/system/editRole',
+  MenuList = '/system/getMenuList',
+  GetAllMenu = '/system/getAllMenu',
+  AddMenu = '/system/addMenuItem',
+  EditMenu = '/system/editMenuItem',
+  DeleteMenu = '/system/deleteMenu',
 }
 
 /**
@@ -37,47 +46,42 @@ export const getDeptList = (params: DeptParams) =>
     params,
   });
 
-/**
- * @description 获取菜单列表
- */
-export const getMenuList = (params: MenuParams) =>
-  defHttp.get<MenuListGetResultModel>({
-    url: Api.MenuList,
-    params,
-  });
+/** 新建角色*/
+export const createRole = (params: CreateRoleParams) =>
+  defHttp.post<CreateRoleResultModel>({ url: Api.createRole, params });
 
-/**
- * @description 获取角色列表(分页)
- */
-export const getRoleListByPage = (params: RolePageParams) =>
-  defHttp.get<RolePageListGetResultModel>({
-    url: Api.RoleListByPage,
-    params,
-  });
+/** 获取角色列表(分页)*/
+export const getRoleListByPage = (params?: RolePageParams) =>
+  defHttp.get<RolePageListGetResultModel>({ url: Api.RolePageList, params });
 
-/**
- * @description 获取全部角色列表
- */
-export const getAllRoleList = (params: RoleParams) =>
-  defHttp.get<RoleListGetResultModel>({
-    url: Api.GetAllRoleList,
-    params,
-  });
+/** 获取全部角色*/
+export const getAllRoleList = (params?: RoleParams) =>
+  defHttp.get<RoleListGetResultModel>({ url: Api.GetAllRoleList, params });
 
-/**
- * @description 设置角色状态
- */
+/** 设置角色状态*/
 export const setRoleStatus = (id: number, status: string) =>
-  defHttp.post({
-    url: Api.SetRoleStatus,
-    params: { id, status },
-  });
+  defHttp.post({ url: Api.SetRoleStatus, params: { id, status } });
 
-/**
- * @description 删除角色
- */
+/** 编辑角色*/
+export const editorRole = (params: CreateRoleParams & { id: number }) =>
+  defHttp.post<CreateRoleResultModel>({ url: Api.editorRole, params });
+
+/** 删除角色*/
 export const deleteRole = ({ id }: { id: string }) =>
-  defHttp.post({
-    url: Api.DeleteRole,
-    params: { id },
-  });
+  defHttp.post({ url: Api.DeleteRole, params: { id } });
+
+/** 获取菜单列表*/
+export const getMenuList = (params: MenuParams) =>
+  defHttp.get<MenuListGetResultModel>({ url: Api.MenuList, params });
+
+/** 获取全部菜单*/
+export const getAllMenu = (params) => defHttp.get({ url: Api.GetAllMenu, params });
+
+/** 新增菜单*/
+export const addMenu = (params) => defHttp.post({ url: Api.AddMenu, params });
+
+/** 编辑菜单*/
+export const editMenu = (params) => defHttp.post({ url: Api.EditMenu, params });
+
+/** 删除菜单*/
+export const deleteMenu = ({ id }) => defHttp.post({ url: Api.DeleteMenu, params: { id } });

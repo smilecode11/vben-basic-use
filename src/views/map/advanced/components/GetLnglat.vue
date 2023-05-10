@@ -251,7 +251,7 @@
       handleConfirm() {
         const formData = this.formData;
         this.$emit('confirm', formData);
-        // this.closeModal();
+        this.closeModal();
       },
       openModal() {
         this.modalShow = true;

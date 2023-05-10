@@ -30,7 +30,7 @@ export const columns: BasicColumn[] = [
   {
     title: '排序',
     dataIndex: 'orderNo',
-    width: 50,
+    width: 150,
   },
   {
     title: '状态',
@@ -46,8 +46,8 @@ export const columns: BasicColumn[] = [
   },
   {
     title: '创建时间',
-    dataIndex: 'createTime',
-    width: 180,
+    dataIndex: 'createdAt',
+    width: 220,
   },
 ];
 
@@ -97,7 +97,12 @@ export const formSchema: FormSchema[] = [
     component: 'Input',
     required: true,
   },
-
+  {
+    field: 'menuEnName',
+    label: '英文名',
+    component: 'Input',
+    required: true,
+  },
   {
     field: 'parentMenu',
     label: '上级菜单',
@@ -122,7 +127,7 @@ export const formSchema: FormSchema[] = [
     field: 'icon',
     label: '图标',
     component: 'IconPicker',
-    required: true,
+    required: false,
     ifShow: ({ values }) => !isButton(values.type),
   },
 
@@ -132,6 +137,13 @@ export const formSchema: FormSchema[] = [
     component: 'Input',
     required: true,
     ifShow: ({ values }) => !isButton(values.type),
+  },
+  {
+    field: 'redirectRoutePath',
+    label: '重定向地址',
+    component: 'Input',
+    required: true,
+    ifShow: ({ values }) => isDir(values.type),
   },
   {
     field: 'component',

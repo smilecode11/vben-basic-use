@@ -33,7 +33,7 @@
   import { defineComponent, nextTick } from 'vue';
 
   import { BasicTable, useTable, TableAction } from '/@/components/Table';
-  import { getMenuList } from '/@/api/demo/system';
+  import { getAllMenu, deleteMenu } from '/@/api/system';
 
   import { useDrawer } from '/@/components/Drawer';
   import MenuDrawer from './MenuDrawer.vue';
@@ -47,7 +47,7 @@
       const [registerDrawer, { openDrawer }] = useDrawer();
       const [registerTable, { reload, expandAll }] = useTable({
         title: '菜单列表',
-        api: getMenuList,
+        api: getAllMenu,
         columns,
         formConfig: {
           labelWidth: 120,
@@ -66,7 +66,7 @@
           title: '操作',
           dataIndex: 'action',
           // slots: { customRender: 'action' },
-          fixed: undefined,
+          fixed: 'right',
         },
       });
 
@@ -83,8 +83,17 @@
         });
       }
 
-      function handleDelete(record: Recordable) {
-        console.log(record);
+      async function handleDelete(record: Recordable) {
+        console.log('_handleDelete', record);
+        try {
+          const deleteResp = await deleteMenu({ id: record.id });
+          console.log('_deleteResp', deleteResp);
+          if (deleteResp.id) {
+            reload();
+          }
+        } catch (error) {
+          console.error('delete role error', error);
+        }
       }
 
       function handleSuccess() {

@@ -15,6 +15,17 @@ export interface RoleListItem {
   orderNo: string;
   createTime: string;
 }
+export interface CreateRoleParams {
+  roleName: string;
+  roleValue: string;
+  status: number;
+  orderNo: string;
+  remark: string;
+  menu: string;
+}
 
 export type RolePageListGetResultModel = BasicFetchResult<RoleListItem>;
 export type RoleListGetResultModel = RoleListItem[];
+export type CreateRoleResultModel = {
+  id: string | number;
+};

@@ -20,7 +20,7 @@ export default defineApplicationConfig({
     server: {
       proxy: {
         '/basic-api': {
-          target: 'http://127.0.0.1:7001',
+          target: 'http://127.0.0.1:7001', //http://120.26.167.109:7001,
           changeOrigin: true,
           ws: true,
           rewrite: (path) => path.replace(new RegExp(`^/basic-api`), '/vben/api'),

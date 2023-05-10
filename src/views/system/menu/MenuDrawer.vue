@@ -16,7 +16,7 @@
   import { formSchema } from './menu.data';
   import { BasicDrawer, useDrawerInner } from '/@/components/Drawer';
 
-  import { getMenuList } from '/@/api/demo/system';
+  import { getAllMenu, addMenu, editMenu } from '/@/api/system';
 
   export default defineComponent({
     name: 'MenuDrawer',
@@ -25,7 +25,17 @@
     setup(_, { emit }) {
       const isUpdate = ref(true);
 
-      const [registerForm, { resetFields, setFieldsValue, updateSchema, validate }] = useForm({
+      const [
+        registerForm,
+        {
+          resetFields,
+          setFieldsValue,
+          updateSchema,
+          validate,
+          removeSchemaByField,
+          appendSchemaByField,
+        },
+      ] = useForm({
         labelWidth: 100,
         schemas: formSchema,
         showActionButtonGroup: false,
@@ -38,11 +48,29 @@
         isUpdate.value = !!data?.isUpdate;
 
         if (unref(isUpdate)) {
+          //  编辑时, 添加 id 字段
+          removeSchemaByField('id'); //  清除字段
+          appendSchemaByField(
+            {
+              field: 'id',
+              label: '菜单ID',
+              required: true,
+              component: 'Input',
+              componentProps: {
+                disabled: true,
+                defaultValue: data.record.id,
+              },
+            },
+            undefined,
+            true,
+          );
           setFieldsValue({
             ...data.record,
           });
+        } else {
+          removeSchemaByField('id'); //  清除字段
         }
-        const treeData = await getMenuList();
+        const treeData = await getAllMenu();
         updateSchema({
           field: 'parentMenu',
           componentProps: { treeData },
@@ -55,8 +83,10 @@
         try {
           const values = await validate();
           setDrawerProps({ confirmLoading: true });
-          // TODO custom api
           console.log(values);
+          // TODO: 新增/编辑菜单项
+          const result = unref(isUpdate) ? await editMenu(values) : await addMenu(values);
+          console.log('_result', result);
           closeDrawer();
           emit('success');
         } finally {
