@@ -33,7 +33,7 @@
   import { defineComponent } from 'vue';
 
   import { BasicTable, useTable, TableAction } from '/@/components/Table';
-  import { getDeptList } from '/@/api/demo/system';
+  import { getDeptList, deleteDept } from '/@/api/system';
 
   import { useModal } from '/@/components/Modal';
   import DeptModal from './DeptModal.vue';
@@ -82,8 +82,16 @@
         });
       }
 
-      function handleDelete(record: Recordable) {
-        console.log(record);
+      async function handleDelete(record: Recordable) {
+        try {
+          const deleteResp = await deleteDept({ id: record.id });
+          console.log('_deleteResp', deleteResp);
+          if (deleteResp.id) {
+            reload();
+          }
+        } catch (error) {
+          console.error('delete role error', error);
+        }
       }
 
       function handleSuccess() {

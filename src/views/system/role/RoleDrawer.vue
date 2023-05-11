@@ -28,7 +28,7 @@
   import { BasicDrawer, useDrawerInner } from '/@/components/Drawer';
   import { BasicTree, TreeItem } from '/@/components/Tree';
 
-  import { getMenuList, createRole, editorRole } from '/@/api/system';
+  import { getAllMenu, createRole, editorRole } from '/@/api/system';
 
   export default defineComponent({
     name: 'RoleDrawer',
@@ -61,7 +61,7 @@
         // 需要在setFieldsValue之前先填充treeData，否则Tree组件可能会报key not exist警告
         if (unref(treeData).length === 0) {
           // TODO: 获取菜单列表
-          // treeData.value = (await getMenuList()) as any as TreeItem[];
+          treeData.value = (await getAllMenu()) as any as TreeItem[];
         }
         isUpdate.value = !!data?.isUpdate;
 

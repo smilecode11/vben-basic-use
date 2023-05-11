@@ -28,8 +28,8 @@ export const columns: BasicColumn[] = [
   },
   {
     title: '创建时间',
-    dataIndex: 'createTime',
-    width: 180,
+    dataIndex: 'createdAt',
+    width: 220,
   },
   {
     title: '备注',
@@ -78,13 +78,13 @@ export const formSchema: FormSchema[] = [
       },
       getPopupContainer: () => document.body,
     },
-    required: true,
+    required: false,
   },
   {
     field: 'orderNo',
     label: '排序',
     component: 'InputNumber',
-    required: true,
+    required: false,
   },
   {
     field: 'status',

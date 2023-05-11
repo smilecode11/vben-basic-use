@@ -6,7 +6,9 @@ export type DeptParams = {
 };
 
 export interface DeptListItem {
-  id: string;
+  id: number;
+  deptName: string;
+  parentDept: number;
   orderNo: string;
   createTime: string;
   remark: string;

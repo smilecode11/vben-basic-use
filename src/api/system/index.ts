@@ -13,7 +13,6 @@ import { MenuParams, MenuListGetResultModel } from './model/menuModel';
 
 enum Api {
   AccountList = '/system/getAccountList',
-  DeptList = '/system/getDeptList',
   RoleListByPage = '/system/getRoles',
   SetRoleStatus = '/system/setRoleStatus',
   RolePageList = '/system/getRoles',
@@ -26,6 +25,11 @@ enum Api {
   AddMenu = '/system/addMenuItem',
   EditMenu = '/system/editMenuItem',
   DeleteMenu = '/system/deleteMenu',
+  GetDeptList = '/system/getDeptList',
+  GetAllDept = '/system/getAllDept',
+  AddDept = '/system/addDept',
+  EditDept = '/system/editDept',
+  DeleteDept = '/system/deleteDept',
 }
 
 /**
@@ -34,15 +38,6 @@ enum Api {
 export const getAccountList = (params: AccountParams) =>
   defHttp.get<AccountListGetResultModel>({
     url: Api.AccountList,
-    params,
-  });
-
-/**
- * @description 获取部门列表
- */
-export const getDeptList = (params: DeptParams) =>
-  defHttp.get<DeptListGetResultModel>({
-    url: Api.DeptList,
     params,
   });
 
@@ -85,3 +80,24 @@ export const editMenu = (params) => defHttp.post({ url: Api.EditMenu, params });
 
 /** 删除菜单*/
 export const deleteMenu = ({ id }) => defHttp.post({ url: Api.DeleteMenu, params: { id } });
+
+/**
+ * @description 获取部门列表
+ */
+export const getDeptList = (params: DeptParams) =>
+  defHttp.get<DeptListGetResultModel>({
+    url: Api.GetDeptList,
+    params,
+  });
+
+/** 获取全部部门 tree */
+export const getAllDepts = (params) => defHttp.get({ url: Api.GetAllDept, params });
+
+/** 新增部门*/
+export const addDept = (params) => defHttp.post({ url: Api.AddDept, params });
+
+/** 编辑部门*/
+export const editDept = (params) => defHttp.post({ url: Api.EditDept, params });
+
+/** 删除部门*/
+export const deleteDept = ({ id }) => defHttp.post({ url: Api.DeleteDept, params: { id } });
