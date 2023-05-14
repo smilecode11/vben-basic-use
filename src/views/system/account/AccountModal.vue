@@ -8,7 +8,7 @@
   import { BasicModal, useModalInner } from '/@/components/Modal';
   import { BasicForm, useForm } from '/@/components/Form/index';
   import { accountFormSchema } from './account.data';
-  import { getDeptList } from '/@/api/demo/system';
+  import { getAllDepts, addAccount, editAccount, isAccountExist } from '/@/api/system';
 
   export default defineComponent({
     name: 'AccountModal',
@@ -18,7 +18,17 @@
       const isUpdate = ref(true);
       const rowId = ref('');
 
-      const [registerForm, { setFieldsValue, updateSchema, resetFields, validate }] = useForm({
+      const [
+        registerForm,
+        {
+          setFieldsValue,
+          updateSchema,
+          resetFields,
+          validate,
+          removeSchemaByField,
+          appendSchemaByField,
+        },
+      ] = useForm({
         labelWidth: 100,
         baseColProps: { span: 24 },
         schemas: accountFormSchema,
@@ -34,18 +44,36 @@
         isUpdate.value = !!data?.isUpdate;
 
         if (unref(isUpdate)) {
+          //  编辑时, 添加 id 字段
+          removeSchemaByField('id'); //  清除字段
+          appendSchemaByField(
+            {
+              field: 'id',
+              label: '账号ID',
+              required: true,
+              component: 'Input',
+              componentProps: {
+                disabled: true,
+                defaultValue: data.record.id,
+              },
+            },
+            undefined,
+            true,
+          );
           rowId.value = data.record.id;
           setFieldsValue({
             ...data.record,
           });
+        } else {
+          removeSchemaByField('id'); //  清除字段
         }
 
-        const treeData = await getDeptList();
+        const treeData = await getAllDepts();
         updateSchema([
-          {
-            field: 'pwd',
-            show: !unref(isUpdate),
-          },
+          // {
+          //   field: 'pwd',
+          //   show: !unref(isUpdate),
+          // },
           {
             field: 'dept',
             componentProps: { treeData },
@@ -59,12 +87,17 @@
         try {
           const values = await validate();
           setModalProps({ confirmLoading: true });
-          // TODO custom api
-          console.log(values);
-          closeModal();
-          emit('success', { isUpdate: unref(isUpdate), values: { ...values, id: rowId.value } });
+          // 角色保存操作
+          console.log('_values', values);
+          try {
+            !unref(isUpdate) ? await addAccount(values) : await editAccount(values);
+            closeModal();
+            emit('success', { isUpdate: unref(isUpdate), values: { ...values, id: rowId.value } });
+          } catch (error) {
+            console.log('role save eror', error);
+          }
         } finally {
-          setModalProps({ confirmLoading: false });
+          setModalProps({ confirmLoading: true });
         }
       }
 

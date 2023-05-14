@@ -38,6 +38,8 @@ export interface UserInfo {
   desc?: string;
   homePath?: string;
   roles: RoleInfo[];
+  nickname?: string; //账号昵称
+  account?: string; //账号
 }
 
 export interface Sms {

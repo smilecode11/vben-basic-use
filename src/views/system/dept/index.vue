@@ -53,7 +53,7 @@
           labelWidth: 120,
           schemas: searchFormSchema,
         },
-        pagination: false,
+        pagination: true,
         striped: false,
         useSearchForm: true,
         showTableSetting: true,
@@ -65,7 +65,6 @@
           title: '操作',
           dataIndex: 'action',
           // slots: { customRender: 'action' },
-          fixed: undefined,
         },
       });
 

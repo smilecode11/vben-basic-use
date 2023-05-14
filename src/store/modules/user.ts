@@ -99,8 +99,7 @@ export const useUserStore = defineStore({
         const { goHome = true, mode, ...loginParams } = params;
         const data = await loginApi(loginParams, mode);
         const { token } = data;
-        console.log('_token', token);
-        // save token
+        // console.log('_token', token);
         this.setToken(token);
         return this.afterLoginAction(goHome);
       } catch (error) {
@@ -111,7 +110,7 @@ export const useUserStore = defineStore({
       if (!this.getToken) return null;
       // get user info
       const userInfo = await this.getUserInfoAction();
-      console.log('_login userInfo', userInfo);
+      // console.log('_login userInfo', userInfo);
 
       const sessionTimeout = this.sessionTimeout;
       if (sessionTimeout) {

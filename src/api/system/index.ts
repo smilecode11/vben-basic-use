@@ -12,7 +12,6 @@ import {
 import { MenuParams, MenuListGetResultModel } from './model/menuModel';
 
 enum Api {
-  AccountList = '/system/getAccountList',
   RoleListByPage = '/system/getRoles',
   SetRoleStatus = '/system/setRoleStatus',
   RolePageList = '/system/getRoles',
@@ -30,16 +29,12 @@ enum Api {
   AddDept = '/system/addDept',
   EditDept = '/system/editDept',
   DeleteDept = '/system/deleteDept',
+  AccountList = '/system/getAccountList',
+  AddAccount = '/system/addAccount',
+  EditAccount = '/system/editAccount',
+  DeleteAccount = '/system/deleteAccount',
+  isAccountExist = '/system/isAccountExist',
 }
-
-/**
- * @description 获取账号列表
- */
-export const getAccountList = (params: AccountParams) =>
-  defHttp.get<AccountListGetResultModel>({
-    url: Api.AccountList,
-    params,
-  });
 
 /** 新建角色*/
 export const createRole = (params: CreateRoleParams) =>
@@ -91,7 +86,7 @@ export const getDeptList = (params: DeptParams) =>
   });
 
 /** 获取全部部门 tree */
-export const getAllDepts = (params) => defHttp.get({ url: Api.GetAllDept, params });
+export const getAllDepts = (params = {}) => defHttp.get({ url: Api.GetAllDept, params });
 
 /** 新增部门*/
 export const addDept = (params) => defHttp.post({ url: Api.AddDept, params });
@@ -101,3 +96,23 @@ export const editDept = (params) => defHttp.post({ url: Api.EditDept, params });
 
 /** 删除部门*/
 export const deleteDept = ({ id }) => defHttp.post({ url: Api.DeleteDept, params: { id } });
+
+/**
+ * @description 获取账号列表
+ */
+export const getAccountList = (params: AccountParams) =>
+  defHttp.get<AccountListGetResultModel>({
+    url: Api.AccountList,
+    params,
+  });
+
+/** 新增账号*/
+export const addAccount = (params) => defHttp.post({ url: Api.AddAccount, params });
+
+/** 编辑账号*/
+export const editAccount = (params) => defHttp.post({ url: Api.EditAccount, params });
+
+/** 删除账号*/
+export const deleteAccount = ({ id }) => defHttp.post({ url: Api.DeleteAccount, params: { id } });
+
+export const isAccountExist = (params) => defHttp.post({ url: Api.isAccountExist, params });

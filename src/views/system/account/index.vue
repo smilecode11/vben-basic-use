@@ -41,7 +41,7 @@
   import { defineComponent, reactive } from 'vue';
 
   import { BasicTable, useTable, TableAction } from '/@/components/Table';
-  import { getAccountList } from '/@/api/demo/system';
+  import { getAccountList, deleteAccount } from '/@/api/system';
   import { PageWrapper } from '/@/components/Page';
   import DeptTree from './DeptTree.vue';
 
@@ -79,6 +79,7 @@
           width: 120,
           title: '操作',
           dataIndex: 'action',
+          // fixed: 'right',
           // slots: { customRender: 'action' },
         },
       });
@@ -90,18 +91,27 @@
       }
 
       function handleEdit(record: Recordable) {
-        console.log(record);
+        // console.log('_handleEdit', record);
         openModal(true, {
           record,
           isUpdate: true,
         });
       }
 
-      function handleDelete(record: Recordable) {
-        console.log(record);
+      async function handleDelete(record: Recordable) {
+        // console.log('_handleDelete', record);
+        try {
+          const deleteResp = await deleteAccount({ id: record.id });
+          if (deleteResp.id) {
+            reload();
+          }
+        } catch (error) {
+          console.error('delete role error', error);
+        }
       }
 
       function handleSuccess({ isUpdate, values }) {
+        console.log('_handleSuccess', isUpdate, values);
         if (isUpdate) {
           // 演示不刷新表格直接更新内部数据。
           // 注意：updateTableDataRecord要求表格的rowKey属性为string并且存在于每一行的record的keys中
@@ -118,6 +128,7 @@
       }
 
       function handleView(record: Recordable) {
+        console.log('_handleView', record);
         go('/system/account_detail/' + record.id);
       }
 

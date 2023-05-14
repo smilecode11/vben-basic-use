@@ -53,6 +53,7 @@ const transform: AxiosTransform = {
     // ******这里逻辑可以根据项目进行修改 *******
     //  这里 code，result，message为 后台统一的字段，需要在 types.ts内修改为项目自己的接口返回格式
     const { errno, data, message } = respData;
+    // console.log('_respData', errno, data, message);
     // const hasSuccess = data && Reflect.has(data, 'code') && code === ResultEnum.SUCCESS;
     const hasSuccess = data && errno === ResultEnum.SUCCESS;
     // console.log('_hasSuccess', hasSuccess, '_options', options);
@@ -74,12 +75,20 @@ const transform: AxiosTransform = {
     // 如果不希望中断当前请求，请return数据，否则直接抛出异常即可
     let timeoutMsg = '';
     switch (errno) {
-      case ResultEnum.TIMEOUT:
+      case ResultEnum.TIMEOUT: {
         timeoutMsg = t('sys.api.timeoutMessage');
         const userStore = useUserStoreWithOut();
         userStore.setToken(undefined);
         userStore.logout(true);
         break;
+      }
+      case ResultEnum.CUSTOM_TIMEOUT: {
+        timeoutMsg = t('sys.api.timeoutMessage');
+        const userStore = useUserStoreWithOut();
+        userStore.setToken(undefined);
+        userStore.logout(true);
+        break;
+      }
       default:
         if (message) {
           timeoutMsg = message;
