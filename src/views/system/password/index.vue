@@ -11,14 +11,21 @@
 </template>
 <script lang="ts">
   import { defineComponent } from 'vue';
+  // import { useRouter } from 'vue-router';
+  import { useUserStore } from '/@/store/modules/user';
   import { PageWrapper } from '/@/components/Page';
   import { BasicForm, useForm } from '/@/components/Form';
-
+  import { message } from 'ant-design-vue';
   import { formSchema } from './pwd.data';
+  import { editPassword } from '@/api/system';
+  // import { PageEnum as pageEnum } from '/@/enums/pageEnum';
+
   export default defineComponent({
     name: 'ChangePassword',
     components: { BasicForm, PageWrapper },
     setup() {
+      // const router = useRouter();
+      const userStore = useUserStore();
       const [register, { validate, resetFields }] = useForm({
         size: 'large',
         baseColProps: { span: 24 },
@@ -31,12 +38,13 @@
         try {
           const values = await validate();
           const { passwordOld, passwordNew } = values;
-
-          // TODO custom api
-          console.log(passwordOld, passwordNew);
-          // const { router } = useRouter();
+          await editPassword({ passwordOld, passwordNew });
+          message.success('密码修改成功, 即刻为您登出!');
+          userStore.logout(true);
           // router.push(pageEnum.BASE_LOGIN);
-        } catch (error) {}
+        } catch (error) {
+          console.error(error.message);
+        }
       }
 
       return { register, resetFields, handleSubmit };

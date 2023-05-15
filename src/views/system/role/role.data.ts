@@ -15,11 +15,6 @@ export const columns: BasicColumn[] = [
     dataIndex: 'roleValue',
     width: 180,
   },
-  // {
-  //   title: '排序',
-  //   dataIndex: 'orderNo',
-  //   width: 50,
-  // },
   {
     title: '状态',
     dataIndex: 'status',

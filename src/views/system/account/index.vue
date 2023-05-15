@@ -38,10 +38,11 @@
   </PageWrapper>
 </template>
 <script lang="ts">
-  import { defineComponent, reactive } from 'vue';
+  import { defineComponent, reactive, onMounted } from 'vue';
 
   import { BasicTable, useTable, TableAction } from '/@/components/Table';
   import { getAccountList, deleteAccount } from '/@/api/system';
+  import { getAccountMenuList } from '/@/api/sys/menu';
   import { PageWrapper } from '/@/components/Page';
   import DeptTree from './DeptTree.vue';
 
@@ -61,6 +62,9 @@
       const [registerTable, { reload, updateTableDataRecord }] = useTable({
         title: '账号列表',
         api: getAccountList,
+        // afterFetch(data) {
+        //   console.log('_fetch data', data);
+        // },
         rowKey: 'id',
         columns,
         formConfig: {
@@ -74,6 +78,10 @@
         handleSearchInfoFn(info) {
           console.log('handleSearchInfoFn', info);
           return info;
+        },
+        pagination: {
+          pageSize: 10,
+          pageSizeOptions: ['10', '20', '50', '200'],
         },
         actionColumn: {
           width: 120,
@@ -131,6 +139,10 @@
         console.log('_handleView', record);
         go('/system/account_detail/' + record.id);
       }
+
+      onMounted(async () => {
+        await getAccountMenuList();
+      });
 
       return {
         registerTable,

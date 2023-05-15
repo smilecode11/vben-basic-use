@@ -34,6 +34,7 @@ enum Api {
   EditAccount = '/system/editAccount',
   DeleteAccount = '/system/deleteAccount',
   isAccountExist = '/system/isAccountExist',
+  EditPassword = '/system/editPassword',
 }
 
 /** 新建角色*/
@@ -65,7 +66,7 @@ export const getMenuList = (params: MenuParams) =>
   defHttp.get<MenuListGetResultModel>({ url: Api.MenuList, params });
 
 /** 获取全部菜单*/
-export const getAllMenu = (params) => defHttp.get({ url: Api.GetAllMenu, params });
+export const getAllMenu = (params = {}) => defHttp.get({ url: Api.GetAllMenu, params });
 
 /** 新增菜单*/
 export const addMenu = (params) => defHttp.post({ url: Api.AddMenu, params });
@@ -115,4 +116,8 @@ export const editAccount = (params) => defHttp.post({ url: Api.EditAccount, para
 /** 删除账号*/
 export const deleteAccount = ({ id }) => defHttp.post({ url: Api.DeleteAccount, params: { id } });
 
+/** 账号是否存在*/
 export const isAccountExist = (params) => defHttp.post({ url: Api.isAccountExist, params });
+
+/** 修改密码*/
+export const editPassword = (params) => defHttp.post({ url: Api.EditPassword, params });

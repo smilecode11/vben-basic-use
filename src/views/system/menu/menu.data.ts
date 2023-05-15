@@ -19,6 +19,12 @@ export const columns: BasicColumn[] = [
     },
   },
   {
+    title: '组件名称',
+    dataIndex: 'menuEnName',
+    width: 200,
+    align: 'left',
+  },
+  {
     title: '权限标识',
     dataIndex: 'permission',
     width: 180,
@@ -142,7 +148,7 @@ export const formSchema: FormSchema[] = [
     field: 'redirectRoutePath',
     label: '重定向地址',
     component: 'Input',
-    required: true,
+    required: false,
     ifShow: ({ values }) => isDir(values.type),
   },
   {

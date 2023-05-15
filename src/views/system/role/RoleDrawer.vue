@@ -13,10 +13,12 @@
           v-model:value="model[field]"
           :treeData="treeData"
           :fieldNames="{ title: 'menuName', key: 'id' }"
-          checkable
           toolbar
+          checkable
+          checkStrictly
           title="菜单分配"
         />
+        <!-- checkStrictly 层级不关联 -->
       </template>
     </BasicForm>
   </BasicDrawer>
@@ -37,6 +39,7 @@
     setup(_, { emit }) {
       const isUpdate = ref(true);
       const treeData = ref<TreeItem[]>([]);
+      const treeRef = ref<null | HTMLElement>(null);
 
       const [
         registerForm,
@@ -96,10 +99,16 @@
       async function handleSubmit() {
         try {
           const values = await validate();
+          // console.log('_values', values, '_filedValue', getFieldsValue());
           setDrawerProps({ confirmLoading: true });
-          // 角色保存操作
-          console.log('_values', values, '_filedValue', getFieldsValue());
+
           try {
+            // 处理选中的值, 菜单必须是父子层无关系
+            if (!Array.isArray(values.menu)) {
+              let temp = [...values.menu['checked']];
+              values.menu = temp;
+            }
+            // 角色保存操作
             !unref(isUpdate) ? await createRole(values) : await editorRole(values);
             closeDrawer();
             emit('success');
@@ -110,7 +119,6 @@
           setDrawerProps({ confirmLoading: false });
         }
       }
-
       return {
         registerDrawer,
         registerForm,
