@@ -38,11 +38,11 @@
   </PageWrapper>
 </template>
 <script lang="ts">
-  import { defineComponent, reactive, onMounted } from 'vue';
+  import { defineComponent, reactive /* , onMounted */ } from 'vue';
 
   import { BasicTable, useTable, TableAction } from '/@/components/Table';
   import { getAccountList, deleteAccount } from '/@/api/system';
-  import { getAccountMenuList } from '/@/api/sys/menu';
+  // import { getAccountMenuList } from '/@/api/sys/menu';
   import { PageWrapper } from '/@/components/Page';
   import DeptTree from './DeptTree.vue';
 
@@ -140,9 +140,9 @@
         go('/system/account_detail/' + record.id);
       }
 
-      onMounted(async () => {
-        await getAccountMenuList();
-      });
+      // onMounted(async () => {
+      //   await getAccountMenuList();
+      // });
 
       return {
         registerTable,

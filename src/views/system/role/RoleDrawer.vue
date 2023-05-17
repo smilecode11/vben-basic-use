@@ -13,11 +13,11 @@
           v-model:value="model[field]"
           :treeData="treeData"
           :fieldNames="{ title: 'menuName', key: 'id' }"
-          toolbar
           checkable
           checkStrictly
           title="菜单分配"
         />
+        <!-- toolbar 工具 bar -->
         <!-- checkStrictly 层级不关联 -->
       </template>
     </BasicForm>
@@ -29,7 +29,6 @@
   import { formSchema } from './role.data';
   import { BasicDrawer, useDrawerInner } from '/@/components/Drawer';
   import { BasicTree, TreeItem } from '/@/components/Tree';
-
   import { getAllMenu, createRole, editorRole } from '/@/api/system';
 
   export default defineComponent({
@@ -39,18 +38,10 @@
     setup(_, { emit }) {
       const isUpdate = ref(true);
       const treeData = ref<TreeItem[]>([]);
-      const treeRef = ref<null | HTMLElement>(null);
 
       const [
         registerForm,
-        {
-          resetFields,
-          setFieldsValue,
-          getFieldsValue,
-          appendSchemaByField,
-          removeSchemaByField,
-          validate,
-        },
+        { resetFields, setFieldsValue, appendSchemaByField, removeSchemaByField, validate },
       ] = useForm({
         labelWidth: 90,
         baseColProps: { span: 24 },
