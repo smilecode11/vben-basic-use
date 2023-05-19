@@ -6,7 +6,6 @@ import 'ant-design-vue/dist/antd.less';
 import 'virtual:svg-icons-register';
 
 import { createApp } from 'vue';
-
 import { registerGlobComp } from '@/components/registerGlobComp';
 import { setupGlobDirectives } from '@/directives';
 import { setupI18n } from '@/locales/setupI18n';

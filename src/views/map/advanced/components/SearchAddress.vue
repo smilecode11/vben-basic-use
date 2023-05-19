@@ -48,6 +48,7 @@
       ASelect: Select,
       ASelectOption: SelectOption,
     },
+    emits: ['confirm'],
     data() {
       return {
         modalShow: false,
