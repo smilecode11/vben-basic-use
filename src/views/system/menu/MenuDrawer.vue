@@ -42,6 +42,7 @@
         baseColProps: { lg: 12, md: 24 },
       });
 
+      // callback param data -> 父组件传递的属性
       const [registerDrawer, { setDrawerProps, closeDrawer }] = useDrawerInner(async (data) => {
         resetFields();
         setDrawerProps({ confirmLoading: false });

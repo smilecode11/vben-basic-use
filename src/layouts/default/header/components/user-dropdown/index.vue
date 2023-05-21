@@ -11,6 +11,7 @@
 
     <template #overlay>
       <Menu @click="handleMenuClick">
+        <MenuItem key="selfCenter" :text="t('layout.header.dropdownSelfCenter')" icon="" />
         <MenuItem
           key="doc"
           :text="t('layout.header.dropdownItemDoc')"
@@ -55,7 +56,7 @@
 
   import { createAsyncComponent } from '/@/utils/factory/createAsyncComponent';
 
-  type MenuEvent = 'logout' | 'doc' | 'lock';
+  type MenuEvent = 'logout' | 'doc' | 'lock' | 'selfCenter';
 
   export default defineComponent({
     name: 'UserDropdown',
@@ -106,6 +107,9 @@
             break;
           case 'lock':
             handleLock();
+            break;
+          case 'selfCenter':
+            console.log('TODO: 个人中心');
             break;
         }
       }

@@ -1,7 +1,7 @@
 import { h } from 'vue';
 import Icon from '@/components/Icon/Icon.vue';
 import { Tag } from 'ant-design-vue';
-import { BasicColumn } from '@/components/Table';
+import { BasicColumn, FormSchema } from '@/components/Table';
 
 export type GetBasicDataProps = () => {
   items: any[];
@@ -20,6 +20,7 @@ export const getBasicColumns: GetBasicColumns = () => [
     dataIndex: 'menuName',
     width: 200,
     align: 'left',
+    helpMessage: ['菜单名'],
   },
   {
     title: '图标',
@@ -58,10 +59,36 @@ export const getBasicColumns: GetBasicColumns = () => [
     title: '是否缓存',
     dataIndex: 'keepalive',
     width: 220,
+    edit: true,
+    editComponent: 'Input',
+    editComponentProps: {
+      placeholder: '是否缓存?',
+    },
   },
   {
     title: '组件',
     dataIndex: 'component',
     width: 220,
+  },
+];
+
+export const searchFormSchema: FormSchema[] = [
+  {
+    field: 'menuName',
+    label: '菜单名称',
+    component: 'Input',
+    colProps: { span: 8 },
+  },
+  {
+    field: 'status',
+    label: '状态',
+    component: 'Select',
+    componentProps: {
+      options: [
+        { label: '启用', value: '0' },
+        { label: '停用', value: '1' },
+      ],
+    },
+    colProps: { span: 8 },
   },
 ];
