@@ -7,6 +7,15 @@
         <template #customSlot="{ model, field }">
           <a-input v-model:value="model[field]" />
         </template>
+        <!-- 位置选择 -->
+        <template #renderComponentContent="{ model, field }">
+          <a-input v-model:value="model[field]">
+            <template #prefix>😄</template>
+            <template #suffix>
+              <EnvironmentOutlined @click="handleShowAddress" />
+            </template>
+          </a-input>
+        </template>
         <template #formHeader> 表单顶部插槽 </template>
         <template #formFooter> 表单底部插槽 </template>
       </BasicForm>
@@ -49,7 +58,7 @@
    *    ifShow 动态判断当前组件是否显示，js 控制，会删除 dom *
    *    dynamicDisabled 动态判断组件是否禁用
    */
-  import { defineComponent, h, ref, reactive, toRefs, getCurrentInstance } from 'vue';
+  import { defineComponent, h, ref, reactive, toRefs } from 'vue';
   import { PageWrapper } from '/@/components/Page';
   import { BasicTitle } from '/@/components/Basic';
   import { BasicForm, FormSchema, useForm } from '/@/components/Form';
@@ -257,23 +266,19 @@
       label: 'renderComponentContent',
       labelWidth: '200px',
       component: 'Input',
-      rules: [{ required: true, message: '请选择地址' }],
-      componentProps: {
-        placeholder: '请输入内容',
-      },
-      // 渲染组件内容
-      renderComponentContent: ({ values }) => {
-        return {
-          prefix: () => '位置:',
-          suffix: h(EnvironmentOutlined, {
-            onClick() {
-              console.log('TODO: 位置选择', values);
-              const _this = getCurrentInstance() as any;
-              _this.handleShowAddress();
-            },
-          }),
-        };
-      },
+      slot: 'renderComponentContent',
+    },
+    {
+      field: 'lng',
+      component: 'Input',
+      label: '经度',
+      show: false,
+    },
+    {
+      field: 'lat',
+      component: 'Input',
+      label: '纬度',
+      show: false,
     },
     {
       field: 'field',
@@ -353,11 +358,13 @@
   ];
 
   export default defineComponent({
+    name: 'LearnVbenFormUseForm',
     components: {
       PageWrapper,
       BasicForm,
       BasicTitle,
       SearchAddress,
+      EnvironmentOutlined,
     },
     setup() {
       // register 用于注册 useForm，如果需要使用 useForm 提供的 api，必须将 register 传入组件的 onRegister
@@ -369,7 +376,7 @@
         address: '',
       });
 
-      const [register, { setProps }] = useForm({
+      const [register, { setProps, setFieldsValue }] = useForm({
         labelWidth: 80,
         schemas,
         actionColOptions: {
@@ -395,6 +402,9 @@
         // ],
       });
 
+      // setFieldsValue 设置表单字段值 [{fieldName: value}, ...]
+      // resetFields 重置表单值
+
       return {
         register,
         setProps,
@@ -404,6 +414,11 @@
         },
         onSearchAddressConfirm: (data) => {
           console.log('_onSearchAddressConfirm', data);
+          setFieldsValue({
+            renderComponentContent: data.address,
+            lng: data.lng,
+            lat: data.lat,
+          });
         },
         searchAddressRef,
         handleShowAddress: () => {

@@ -21,6 +21,7 @@ enum Api {
   editorRole = '/system/editRole',
   MenuList = '/system/getMenuList',
   GetAllMenu = '/system/getAllMenu',
+  GetMenuListByPage = '/system/getMenuListByPage',
   AddMenu = '/system/addMenuItem',
   EditMenu = '/system/editMenuItem',
   DeleteMenu = '/system/deleteMenu',
@@ -67,6 +68,10 @@ export const getMenuList = (params: MenuParams) =>
 
 /** 获取全部菜单*/
 export const getAllMenu = (params = {}) => defHttp.get({ url: Api.GetAllMenu, params });
+
+/** 获取菜单列表分页*/
+export const getMenuListByPage = (params = {}) =>
+  defHttp.get({ url: Api.GetMenuListByPage, params });
 
 /** 新增菜单*/
 export const addMenu = (params) => defHttp.post({ url: Api.AddMenu, params });

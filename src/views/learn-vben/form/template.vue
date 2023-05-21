@@ -54,6 +54,7 @@
   // ];
 
   export default defineComponent({
+    name: 'LearnVbenFormTemplate',
     components: {
       PageWrapper,
       // BasicForm,

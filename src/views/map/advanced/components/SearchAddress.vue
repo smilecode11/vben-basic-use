@@ -38,9 +38,17 @@
   </a-modal>
 </template>
 
-<script>
+<script lang="ts">
   import AMapLoader from '@amap/amap-jsapi-loader';
   import { message, Select, SelectOption } from 'ant-design-vue';
+
+  interface FormDataProps {
+    address: string;
+    lng: string | number;
+    lat: string | number;
+    distance: string | number;
+    adcode: string | number;
+  }
 
   var AMap;
   export default {
@@ -55,7 +63,7 @@
         maploading: true,
         type: '', // "address,distance" -> address 提供基础查询地址, distance 半径距离
         tipinputValue: '',
-        formData: {},
+        formData: {} as Partial<FormDataProps>,
         distanceOptions: [
           { value: 200, label: '200米' },
           { value: 100, label: '100米' },
