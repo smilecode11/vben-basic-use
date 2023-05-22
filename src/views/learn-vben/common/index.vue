@@ -66,6 +66,15 @@
         :schema="schema"
       />
       <Description @register="register" class="mt-4" />
+      <BasicTitle span>Upload</BasicTitle>
+      <BasicUpload
+        @change="handleUploadChange"
+        @delete="onUploadDelete"
+        :maxSize="20"
+        :maxNumber="10"
+        :value="uploadData"
+        :api="({ file, name }) => uploadImage({ file, name, type: 'uploadComponent' })"
+      />
     </div>
   </PageWrapper>
 </template>
@@ -84,6 +93,7 @@
   import { CountTo } from '/@/components/CountTo';
   import { CropperImage, CropperAvatar } from '/@/components/Cropper';
   import { Description, DescItem, useDescription } from '/@/components/Description/index';
+  import { BasicUpload } from '/@/components/Upload';
 
   import { uploadImage } from '/@/api/utils';
 
@@ -140,6 +150,7 @@
       CropperImage,
       CropperAvatar,
       Description,
+      BasicUpload,
     },
     setup() {
       //  ScrollContainer
@@ -206,6 +217,15 @@
         useCollapse: true,
       });
 
+      // Upload
+      const uploadData = ref([]);
+      const handleUploadChange = (list: string[]) => {
+        console.log(list);
+      };
+      const onUploadDelete = (record) => {
+        console.log('_onUploadDelete', record);
+      };
+
       return {
         //  PopConfirmButton
         confirmByPopConfirmButton() {
@@ -235,6 +255,10 @@
         mockData,
         schema,
         register,
+        // Upload
+        uploadData,
+        handleUploadChange,
+        onUploadDelete,
       };
     },
   });

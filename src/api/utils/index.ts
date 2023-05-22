@@ -5,7 +5,8 @@ enum Api {
 }
 
 /** 上传图片*/
-export const uploadImage = ({ file, name }) => {
+export const uploadImage = ({ file, name, type = 'normal' }) => {
+  console.log('_uploadImage type', type);
   const formData = new FormData();
   // 第三个参数为文件名
   // console.log('_file', file);
@@ -19,5 +20,14 @@ export const uploadImage = ({ file, name }) => {
       'Content-Type': 'multipart/form-data',
     },
     timeout: 10000,
+    responseType: 'json',
+    transformResponse: (res, config) => {
+      if (type === 'uploadComponent') {
+        config.isUploadComponent = true; //  上传组件添加标识区分
+        return JSON.parse(res);
+      } else {
+        return JSON.parse(res);
+      }
+    },
   });
 };

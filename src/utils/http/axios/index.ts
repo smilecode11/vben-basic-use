@@ -43,9 +43,8 @@ const transform: AxiosTransform = {
     if (!isTransformResponse) {
       return res.data;
     }
-    // console.log('_res', res);
-    // 错误的时候返回
     const { data: respData } = res;
+    // 错误的时候返回
     if (!respData) {
       throw new Error(t('sys.api.apiRequestFailed'));
     }
@@ -55,6 +54,13 @@ const transform: AxiosTransform = {
     const { errno, data, message } = respData;
     // console.log('_respData', errno, data, message);
     // const hasSuccess = data && Reflect.has(data, 'code') && code === ResultEnum.SUCCESS;
+
+    // TIP: 上传组件返回值特殊处理 - 上传组件需要返回数据是 { data: { url } } 取得是第一层数据
+    if (res.headers.isUploadComponent === 'true') {
+      if (errno === ResultEnum.SUCCESS) {
+        return respData;
+      }
+    }
     const hasSuccess = data && errno === ResultEnum.SUCCESS;
     // console.log('_hasSuccess', hasSuccess, '_options', options);
     if (hasSuccess) {
