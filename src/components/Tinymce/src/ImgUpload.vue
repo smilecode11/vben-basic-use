@@ -7,6 +7,7 @@
       :action="uploadUrl"
       :showUploadList="false"
       accept=".jpg,.jpeg,.gif,.png,.webp"
+      :headers="headers"
     >
       <a-button type="primary" v-bind="{ ...getButtonProps }">
         {{ t('component.upload.imgUpload') }}
@@ -21,6 +22,7 @@
   import { useDesign } from '/@/hooks/web/useDesign';
   import { useGlobSetting } from '/@/hooks/setting';
   import { useI18n } from '/@/hooks/web/useI18n';
+  import { getToken } from '/@/utils/auth';
 
   export default defineComponent({
     name: 'TinymceImageUpload',
@@ -37,6 +39,10 @@
     emits: ['uploading', 'done', 'error'],
     setup(props, { emit }) {
       let uploading = false;
+      // 上传设置 headers
+      const headers = {
+        Authorization: `Bearer ${getToken()}`,
+      };
 
       const { uploadUrl } = useGlobSetting();
       const { t } = useI18n();
@@ -50,9 +56,12 @@
       });
 
       function handleChange(info: Record<string, any>) {
+        console.log('_handleChange', info);
         const file = info.file;
         const status = file?.status;
-        const url = file?.response?.url;
+        // TIP: 根据服务端返回修改图片地址
+        // const url = file?.response?.url;
+        const url = file?.response?.data?.url;
         const name = file?.name;
 
         if (status === 'uploading') {
@@ -70,6 +79,7 @@
       }
 
       return {
+        headers,
         prefixCls,
         handleChange,
         uploadUrl,

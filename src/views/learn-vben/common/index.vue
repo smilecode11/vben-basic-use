@@ -78,14 +78,32 @@
         :value="uploadData"
         :api="uploadImage"
       />
-
       <BasicTitle span>Tree</BasicTitle>
-      <BasicTree :treeData="treeData" />
+      <BasicTree ref="basicTreeRef" :treeData="treeData" :rightMenuList="rightMenuListByTree" />
+      <BasicTitle span>Loading</BasicTitle>
+      <a-button class="my-4 mr-4" type="primary" @click="openCompFullLoading">
+        全屏 Loading
+      </a-button>
+      <a-button class="my-4" type="primary" @click="openCompAbsolute">容器内 Loading</a-button>
+      <Loading :loading="loading" :absolute="absolute" :tip="tip" />
+      <BasicTitle span>相对时间组件</BasicTitle>
+      <div>
+        <Time :value="time" /><br />
+        <Time mode="date" :value="time" /><br />
+        <Time mode="datetime" :value="time" />
+      </div>
+      <BasicTitle span>拖动校验组件</BasicTitle>
+      <BasicDragVerify @success="onVerifySuccess" circle ref="basicDragVerifyRef" />
+      <RotateDragVerify
+        :src="rotateDragImage"
+        ref="rotateDragVerifyRef"
+        @success="onRotateVerifySuccess"
+      />
     </div>
   </PageWrapper>
 </template>
 <script lang="ts">
-  import { defineComponent, ref, unref } from 'vue';
+  import { defineComponent, ref, unref, reactive, toRefs } from 'vue';
   import { PageWrapper } from '/@/components/Page';
   import { BasicTitle } from '/@/components/Basic';
   import { PopConfirmButton } from '/@/components/Button';
@@ -100,9 +118,20 @@
   import { CropperImage, CropperAvatar } from '/@/components/Cropper';
   import { Description, DescItem, useDescription } from '/@/components/Description/index';
   import { BasicUpload } from '/@/components/Upload';
-  import { BasicTree, TreeItem } from '/@/components/Tree';
+  import { BasicTree, TreeActionType, TreeItem } from '/@/components/Tree';
+  import { Loading } from '/@/components/Loading';
+  import { Time } from '/@/components/Time';
+  import {
+    BasicDragVerify,
+    DragVerifyActionType,
+    PassingData,
+    RotateDragVerify,
+  } from '/@/components/Verify/index';
+  import { message as antdMessage } from 'ant-design-vue';
 
   import { uploadImage } from '/@/api/utils';
+
+  import rotateDragImage from '/@/assets/images/header.jpg';
 
   const cropperImgUrl = '/@/assets/images/demo.png';
   const mockData: any = {
@@ -192,6 +221,10 @@
       Description,
       BasicUpload,
       BasicTree,
+      Loading,
+      Time,
+      BasicDragVerify,
+      RotateDragVerify,
     },
     setup() {
       //  ScrollContainer
@@ -267,6 +300,55 @@
         console.log('_onUploadDelete', record);
       };
 
+      // Tree
+      const basicTreeRef = ref<Nullable<TreeActionType>>(null);
+
+      // loading
+      const compState = reactive({
+        absolute: false,
+        loading: false,
+        tip: '加载中',
+      });
+      const openLoading = (absolute: boolean) => {
+        compState.absolute = absolute;
+        compState.loading = true;
+        setTimeout(() => {
+          compState.loading = false;
+        }, 2000);
+      };
+      function openCompFullLoading() {
+        openLoading(false);
+      }
+      function openCompAbsolute() {
+        openLoading(true);
+      }
+
+      // 相对时间
+      const now = new Date().getTime();
+      const timeState = reactive({
+        time: now - 60 * 3 * 1000,
+      });
+
+      // 拖动验证
+      const basicDragVerifyRef = ref<null | DragVerifyActionType>(null);
+      function onVerifySuccess(data: PassingData) {
+        console.log('_onVerifySuccess', data);
+        const { time } = data;
+        antdMessage.success(`验证成功, 耗时${time}s, 2s 后还原!`);
+        setTimeout(() => {
+          basicDragVerifyRef.value?.resume();
+        }, 2000);
+      }
+      const rotateDragVerifyRef = ref<null | DragVerifyActionType>(null);
+      function onRotateVerifySuccess(data: PassingData) {
+        console.log('_onRotateVerifySuccess', data);
+        const { time } = data;
+        antdMessage.success(`验证成功, 耗时${time}s, 2s 后还原!`);
+        setTimeout(() => {
+          rotateDragVerifyRef.value?.resume();
+        }, 2000);
+      }
+
       return {
         //  PopConfirmButton
         confirmByPopConfirmButton() {
@@ -302,6 +384,34 @@
         onUploadDelete,
         // Tree
         treeData,
+        rightMenuListByTree: [
+          {
+            label: '展开所有',
+            handler: (...arg) => {
+              console.log('_handler', arg);
+              basicTreeRef.value?.expandAll(true);
+            },
+          },
+          {
+            label: '右键菜单 2',
+            handler: () => {
+              console.log('_handler');
+            },
+          },
+        ],
+        basicTreeRef,
+        // loading
+        openCompFullLoading,
+        openCompAbsolute,
+        ...toRefs(compState),
+        now,
+        ...toRefs(timeState),
+        // 拖动验证
+        basicDragVerifyRef,
+        onVerifySuccess,
+        rotateDragImage,
+        rotateDragVerifyRef,
+        onRotateVerifySuccess,
       };
     },
   });
