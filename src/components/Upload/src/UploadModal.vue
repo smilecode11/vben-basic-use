@@ -194,9 +194,12 @@
               item.percent = complete;
             },
           );
-          const { data } = ret;
+          // TIP: 修改赋值, 保持和其他请求同步
+          // console.log('_uploaded', ret);
+          // const { data } = ret;
+          // item.responseData = data;
           item.status = UploadResultStatus.SUCCESS;
-          item.responseData = data;
+          item.responseData = ret;
           return {
             success: true,
             error: null,

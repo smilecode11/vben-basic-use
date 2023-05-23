@@ -67,14 +67,20 @@
       />
       <Description @register="register" class="mt-4" />
       <BasicTitle span>Upload</BasicTitle>
+      <!-- 
+        :api="({ file, name }) => uploadImage({ file, name, type: 'uploadComponent' })"
+       -->
       <BasicUpload
-        @change="handleUploadChange"
+        @change="onUploadChange"
         @delete="onUploadDelete"
         :maxSize="20"
         :maxNumber="10"
         :value="uploadData"
-        :api="({ file, name }) => uploadImage({ file, name, type: 'uploadComponent' })"
+        :api="uploadImage"
       />
+
+      <BasicTitle span>Tree</BasicTitle>
+      <BasicTree :treeData="treeData" />
     </div>
   </PageWrapper>
 </template>
@@ -94,6 +100,7 @@
   import { CropperImage, CropperAvatar } from '/@/components/Cropper';
   import { Description, DescItem, useDescription } from '/@/components/Description/index';
   import { BasicUpload } from '/@/components/Upload';
+  import { BasicTree, TreeItem } from '/@/components/Tree';
 
   import { uploadImage } from '/@/api/utils';
 
@@ -135,6 +142,39 @@
     },
   ];
 
+  export const treeData: TreeItem[] = [
+    {
+      title: 'parent1',
+      key: '0-0',
+      icon: 'home|svg',
+      children: [
+        {
+          title: 'leaf',
+          key: '0-0-0',
+          children: [
+            {
+              title: 'leaf',
+              key: '0-0-0-0',
+            },
+            {
+              title: 'leaf',
+              key: '0-0-0-1',
+            },
+          ],
+        },
+      ],
+    },
+    {
+      title: 'parent 2',
+      key: '1-1',
+      icon: 'home|svg',
+      children: [
+        { title: 'leaf', key: '1-1-0' },
+        { title: 'leaf', key: '1-1-1' },
+      ],
+    },
+  ];
+
   export default defineComponent({
     components: {
       PageWrapper,
@@ -151,6 +191,7 @@
       CropperAvatar,
       Description,
       BasicUpload,
+      BasicTree,
     },
     setup() {
       //  ScrollContainer
@@ -219,8 +260,8 @@
 
       // Upload
       const uploadData = ref([]);
-      const handleUploadChange = (list: string[]) => {
-        console.log(list);
+      const onUploadChange = (list: string[]) => {
+        console.log('_onUploadChange', list);
       };
       const onUploadDelete = (record) => {
         console.log('_onUploadDelete', record);
@@ -257,8 +298,10 @@
         register,
         // Upload
         uploadData,
-        handleUploadChange,
+        onUploadChange,
         onUploadDelete,
+        // Tree
+        treeData,
       };
     },
   });

@@ -56,11 +56,12 @@ const transform: AxiosTransform = {
     // const hasSuccess = data && Reflect.has(data, 'code') && code === ResultEnum.SUCCESS;
 
     // TIP: 上传组件返回值特殊处理 - 上传组件需要返回数据是 { data: { url } } 取得是第一层数据
-    if (res.headers.isUploadComponent === 'true') {
-      if (errno === ResultEnum.SUCCESS) {
-        return respData;
-      }
-    }
+    // if (res.headers.isUploadComponent === 'true') {
+    //   if (errno === ResultEnum.SUCCESS) {
+    //     return respData;
+    //   }
+    // }
+
     const hasSuccess = data && errno === ResultEnum.SUCCESS;
     // console.log('_hasSuccess', hasSuccess, '_options', options);
     if (hasSuccess) {
