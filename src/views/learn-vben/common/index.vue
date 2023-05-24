@@ -99,11 +99,38 @@
         ref="rotateDragVerifyRef"
         @success="onRotateVerifySuccess"
       />
+      <BasicTitle span>文本复制</BasicTitle>
+      <div style="width: 400px">
+        <a-input v-model:value="copyValue">
+          <template #suffix>
+            <a-button type="primary" @click="handleCopy">Copy</a-button>
+          </template>
+        </a-input>
+      </div>
+      <BasicTitle span>水印</BasicTitle>
+      <a-button type="success" @click="handleSetWaterMark()">添加水印</a-button>
+      <a-button type="warning" @click="clearWatermark">清除水印</a-button>
+      <BasicTitle span>水波纹指令</BasicTitle>
+      <a-button type="success" size="large" v-ripple>水波纹</a-button>
+      <div
+        style="width: 200px; height: 200px; background: deepskyblue; border-radius: 8px"
+        v-ripple
+        @click="handleRipple"
+      >
+        水波纹示例
+      </div>
+      <BasicTitle span>FullScreen(容器全屏)</BasicTitle>
+      <div
+        ref="fullScreenRef"
+        class="flex items-center justify-center w-1/2 h-64 mx-auto mt-10 bg-white rounded-md border-4 border-cyan-100"
+      >
+        <a-button type="primary" @click="toggleFull" class="mr-2"> 全屏展示 </a-button>
+      </div>
     </div>
   </PageWrapper>
 </template>
 <script lang="ts">
-  import { defineComponent, ref, unref, reactive, toRefs } from 'vue';
+  import { defineComponent, ref, unref, reactive, toRefs, onMounted, onUnmounted } from 'vue';
   import { PageWrapper } from '/@/components/Page';
   import { BasicTitle } from '/@/components/Basic';
   import { PopConfirmButton } from '/@/components/Button';
@@ -121,6 +148,12 @@
   import { BasicTree, TreeActionType, TreeItem } from '/@/components/Tree';
   import { Loading } from '/@/components/Loading';
   import { Time } from '/@/components/Time';
+  import { useCopyToClipboard } from '/@/hooks/web/useCopyToClipboard';
+  import { useMessage } from '/@/hooks/web/useMessage';
+  import { useWatermark } from '/@/hooks/web/useWatermark';
+  import RippleDirective from '/@/directives/ripple';
+  import { useFullscreen } from '@vueuse/core';
+
   import {
     BasicDragVerify,
     DragVerifyActionType,
@@ -225,6 +258,9 @@
       Time,
       BasicDragVerify,
       RotateDragVerify,
+    },
+    directives: {
+      Ripple: RippleDirective,
     },
     setup() {
       //  ScrollContainer
@@ -349,6 +385,41 @@
         }, 2000);
       }
 
+      // 拷贝
+      const { createMessage } = useMessage();
+      const { clipboardRef, copiedRef } = useCopyToClipboard();
+      const copyValue = ref('');
+      const handleCopy = () => {
+        const value = unref(copyValue);
+        if (!unref(copyValue)) {
+          createMessage.warning('请输入要拷贝的内容！');
+          return;
+        }
+        clipboardRef.value = value;
+        if (unref(copiedRef)) {
+          createMessage.success('copy success！');
+        }
+      };
+
+      // 水印
+      const { setWatermark, clear } = useWatermark();
+      const handleSetWaterMark = (waterText = 'hello world') => {
+        setWatermark(waterText);
+      };
+      const clearWatermark = () => {
+        clear();
+      };
+      onMounted(() => {
+        handleSetWaterMark();
+      });
+      onUnmounted(() => {
+        clearWatermark();
+      });
+
+      // 全屏
+      const fullScreenRef = ref<Nullable<HTMLElement>>(null);
+      const { toggle: toggleFull } = useFullscreen(fullScreenRef);
+
       return {
         //  PopConfirmButton
         confirmByPopConfirmButton() {
@@ -412,6 +483,18 @@
         rotateDragImage,
         rotateDragVerifyRef,
         onRotateVerifySuccess,
+        // copy
+        copyValue,
+        handleCopy,
+        // 水印
+        handleSetWaterMark,
+        clearWatermark,
+        handleRipple: () => {
+          createMessage.success('水波纹示例');
+        },
+        // 全屏展示 div
+        fullScreenRef,
+        toggleFull,
       };
     },
   });

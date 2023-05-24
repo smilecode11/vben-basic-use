@@ -11,12 +11,10 @@
 
     <template #overlay>
       <Menu @click="handleMenuClick">
-        <MenuItem key="selfCenter" :text="t('layout.header.dropdownSelfCenter')" icon="" />
         <MenuItem
-          key="doc"
-          :text="t('layout.header.dropdownItemDoc')"
-          icon="ion:document-text-outline"
-          v-if="getShowDoc"
+          key="selfCenter"
+          :text="t('layout.header.dropdownSelfCenter')"
+          icon="ant-design:user-outlined"
         />
         <MenuDivider v-if="getShowDoc" />
         <MenuItem
@@ -30,6 +28,12 @@
           :text="t('layout.header.dropdownItemLoginOut')"
           icon="ion:power-outline"
         />
+        <MenuItem
+          key="doc"
+          :text="t('layout.header.dropdownItemDoc')"
+          icon="ion:document-text-outline"
+          v-if="getShowDoc"
+        />
       </Menu>
     </template>
   </Dropdown>
@@ -41,6 +45,7 @@
   import type { MenuInfo } from 'ant-design-vue/lib/menu/src/interface';
 
   import { defineComponent, computed } from 'vue';
+  import { useRouter } from 'vue-router';
 
   import { DOC_URL } from '/@/settings/siteSetting';
 
@@ -97,6 +102,11 @@
         openWindow(DOC_URL);
       }
 
+      const router = useRouter();
+      function routerGoSelfCenter() {
+        router.push('/self-center/setting');
+      }
+
       function handleMenuClick(e: MenuInfo) {
         switch (e.key as MenuEvent) {
           case 'logout':
@@ -109,7 +119,7 @@
             handleLock();
             break;
           case 'selfCenter':
-            console.log('TODO: 个人中心');
+            routerGoSelfCenter();
             break;
         }
       }
