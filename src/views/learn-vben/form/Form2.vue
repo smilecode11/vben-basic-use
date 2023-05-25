@@ -1,10 +1,18 @@
 <template>
   <BasicForm @register="registerForm" @submit="handleSubmitByForm2" style="max-width: 450px">
     <template #addressSelect="{ model, field }">
-      <a-input v-model:value="model[field]">
+      <a-input v-model:value="model[field]" disabled>
         <!-- <template #prefix>😄</template> -->
         <template #suffix>
-          <EnvironmentOutlined @click="handleShowAddress" />
+          <a-button
+            size="small"
+            type="primary"
+            style="display: flex; align-items: center"
+            @click="handleShowAddress"
+          >
+            <EnvironmentOutlined />
+            选择地址
+          </a-button>
         </template>
       </a-input>
     </template>

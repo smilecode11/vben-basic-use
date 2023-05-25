@@ -7,6 +7,7 @@ import 'virtual:svg-icons-register';
 
 import { createApp } from 'vue';
 import { registerGlobComp } from '@/components/registerGlobComp';
+import { registerVCalendar } from '@/components/registerVCalendar';
 import { setupGlobDirectives } from '@/directives';
 import { setupI18n } from '@/locales/setupI18n';
 import { setupErrorHandle } from '@/logics/error-handle';
@@ -14,12 +15,10 @@ import { initAppConfigStore } from '@/logics/initAppConfig';
 import { router, setupRouter } from '@/router';
 import { setupRouterGuard } from '@/router/guard';
 import { setupStore } from '@/store';
-
 import App from './App.vue';
 
 async function bootstrap() {
   const app = createApp(App);
-
   // Configure store
   // 配置 store
   setupStore(app);
@@ -31,6 +30,9 @@ async function bootstrap() {
   // Register global components
   // 注册全局组件
   registerGlobComp(app);
+
+  // 注册 vCalendar(日历) 组件
+  registerVCalendar(app);
 
   // Multilingual configuration
   // 多语言配置
