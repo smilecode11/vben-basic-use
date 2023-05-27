@@ -24,6 +24,21 @@
         <TabPane key="datePicker1" tab="DatePicker">
           <DatePicker1 />
         </TabPane>
+        <TabPane key="datePicker2" tab="TimePicker">
+          <DatePicker2 />
+        </TabPane>
+        <TabPane key="datePicker3" tab="TimeRules">
+          <DatePicker3 />
+        </TabPane>
+        <TabPane key="datePicker4" tab="slot content">
+          <DatePicker4 />
+        </TabPane>
+        <TabPane key="datePicker5" tab="custom attribute">
+          <DatePicker5 />
+        </TabPane>
+        <TabPane key="customcalendar" tab="customcalendar">
+          <CustomCalendar />
+        </TabPane>
       </Tabs>
     </div>
   </PageWrapper>
@@ -40,6 +55,11 @@
   import Calendar5 from './Calendar5.vue';
   import Calendar6 from './Calendar6.vue';
   import DatePicker1 from './DatePicker1.vue';
+  import DatePicker2 from './DatePicker2.vue';
+  import DatePicker3 from './DatePicker3.vue';
+  import DatePicker4 from './DatePicker4.vue';
+  import DatePicker5 from './DatePicker5.vue';
+  import CustomCalendar from './CustomCalendar.vue';
 
   export default defineComponent({
     components: {
@@ -53,6 +73,11 @@
       Calendar5,
       Calendar6,
       DatePicker1,
+      DatePicker2,
+      DatePicker3,
+      DatePicker4,
+      DatePicker5,
+      CustomCalendar,
     },
     setup() {
       const activeKey = ref('calendar1');
