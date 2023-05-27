@@ -6,14 +6,23 @@
         <TabPane key="calendar1" tab="Calendar">
           <Calendar1 />
         </TabPane>
+        <TabPane key="calendar2" tab="Events">
+          <Calendar2 />
+        </TabPane>
         <TabPane key="calendar3" tab="Layouts">
           <Calendar3 />
         </TabPane>
         <TabPane key="calendar4" tab="Navigation">
           <Calendar4 />
         </TabPane>
-        <TabPane key="calendar2" tab="DatePicker">
-          <Calendar2 />
+        <TabPane key="calendar5" tab="Attributes">
+          <Calendar5 />
+        </TabPane>
+        <TabPane key="calendar6" tab="Dates">
+          <Calendar6 />
+        </TabPane>
+        <TabPane key="datePicker1" tab="DatePicker">
+          <DatePicker1 />
         </TabPane>
       </Tabs>
     </div>
@@ -28,6 +37,9 @@
   import Calendar2 from './Calendar2.vue';
   import Calendar3 from './Calendar3.vue';
   import Calendar4 from './Calendar4.vue';
+  import Calendar5 from './Calendar5.vue';
+  import Calendar6 from './Calendar6.vue';
+  import DatePicker1 from './DatePicker1.vue';
 
   export default defineComponent({
     components: {
@@ -38,6 +50,9 @@
       Calendar2,
       Calendar3,
       Calendar4,
+      Calendar5,
+      Calendar6,
+      DatePicker1,
     },
     setup() {
       const activeKey = ref('calendar1');

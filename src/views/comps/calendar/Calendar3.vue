@@ -33,6 +33,10 @@
   import { useScreens } from 'vue-screen-utils';
   import 'v-calendar/style.css';
 
+  const date = new Date();
+  const year = date.getFullYear();
+  const month = date.getMonth();
+
   export default defineComponent({
     components: {
       Calendar,
@@ -40,9 +44,118 @@
     setup() {
       const attrs = ref([
         {
-          key: 'test',
+          key: 'attrs5',
+          dot: {
+            style: {
+              backgroundColor: 'brown',
+            },
+          },
+          popover: {
+            label: '自定义 popover.',
+            visibility: 'hover',
+          },
+          customData: {},
+          dates: [
+            `${year}-${month - 1}-26`,
+            `${year}-${month - 1}-28`,
+            {
+              start: `${year}-${month - 1}-11`,
+              end: `${year}-${month - 1}-13`,
+            },
+          ],
+          order: 0,
+        },
+        {
+          key: 'attrs6',
+          dot: {
+            style: {
+              backgroundColor: 'skyblue',
+            },
+          },
+          popover: {
+            label: '自定义 popover.',
+            visibility: 'hover',
+          },
+          customData: {},
+          dates: [
+            `${year}-${month - 1}-26`,
+            `${year}-${month - 1}-28`,
+            {
+              start: `${year}-${month}-11`,
+              end: `${year}-${month}-13`,
+            },
+          ],
+          order: 0,
+        },
+        {
+          key: 'attrs11',
+          bar: {
+            style: {
+              backgroundColor: 'brown',
+            },
+          },
+          customData: {},
+          dates: [date, `${year}-${month}-21`],
+          order: 0,
+        },
+        {
+          key: 'attrs12',
+          bar: {
+            style: {
+              backgroundColor: 'red',
+            },
+          },
+          customData: {},
+          dates: [date, `${year}-${month}-21`, `${year}-${month}-20`],
+          order: 0,
+        },
+        {
+          key: 'attrs',
           highlight: true,
-          dates: new Date(),
+          dates: [
+            new Date(year, month, 2),
+            new Date(year, month, 7),
+            new Date(year, month, 17),
+            new Date(year, month, 23),
+          ],
+        },
+        {
+          key: 'attrs2',
+          highlight: {
+            color: 'red',
+          },
+          dates: [
+            new Date(year, month, 3),
+            new Date(year, month, 4),
+            [new Date(year, month, 17), new Date(year, month, 19)],
+          ],
+          order: 3, //  覆盖层级
+        },
+        {
+          key: 'attrs3',
+          highlight: 'green',
+          dates: [
+            [new Date(year, month, 19), new Date(year, month, 24)],
+            { start: new Date(year, month, 25), span: 3 },
+          ],
+          order: 2,
+        },
+        {
+          key: 'repeat',
+          highlight: {
+            color: 'red',
+          },
+          dot: {
+            color: 'red',
+          },
+          dates: {
+            start: new Date(year, month - 2, 12),
+            // end: new Date(year, month, 12),
+            repeat: {
+              every: 'month',
+              days: [12, 13],
+            },
+          },
         },
       ]);
 
