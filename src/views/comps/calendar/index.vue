@@ -36,7 +36,7 @@
         <TabPane key="datePicker5" tab="custom attribute">
           <DatePicker5 />
         </TabPane>
-        <TabPane key="customcalendar" tab="customcalendar">
+        <TabPane key="customcalendar" tab="Custom Calendar">
           <CustomCalendar />
         </TabPane>
       </Tabs>
