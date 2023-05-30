@@ -155,12 +155,23 @@
         style="width: 500px; height: 220px"
         @click="clickHandler"
       />
+      <CapsuleChart :config="capsuleChartConfig" style="width: 25rem; height: 15rem" />
+      <ActiveRingChart :config="activeRingChartConf" style="width: 300px; height: 300px" />
+      <DigitalFlop :config="digitalFlopConfig" />
+      <Charts :option="chartsOption" style="width: 25rem; height: 15rem" />
+      <br />
+      <FlylineChart :config="flylineChartConfig" :dev="true" style="width: 600px; height: 600px" />
+      <FlylineChartEnhanced
+        :config="flylineChartEnhancedConfig"
+        :dev="true"
+        style="width: 600px; height: 600px"
+      />
     </div>
   </PageWrapper>
 </template>
 
 <script lang="ts">
-  import { defineComponent, ref } from 'vue';
+  import { defineComponent, ref, onMounted, reactive } from 'vue';
   import { PageWrapper } from '/@/components/Page';
   import {
     BorderBox1,
@@ -194,6 +205,12 @@
     Loading,
     ScrollRankingBoard,
     ScrollBoard,
+    CapsuleChart,
+    ActiveRingChart,
+    DigitalFlop,
+    Charts,
+    FlylineChart,
+    FlylineChartEnhanced,
   } from '@kjgl77/datav-vue3';
 
   export default defineComponent({
@@ -231,10 +248,65 @@
       Loading,
       ScrollRankingBoard,
       ScrollBoard,
+      CapsuleChart,
+      ActiveRingChart,
+      DigitalFlop,
+      Charts,
+      FlylineChart,
+      FlylineChartEnhanced,
     },
     setup() {
       // [文档说明]
       // https://datav-vue3.netlify.app/Other/ConicalColumnChart/ConicalColumnChart.html
+
+      function formatter(number: number) {
+        const numbers = number.toString().split('').reverse();
+        const segs = [];
+        while (numbers.length) segs.push(numbers.splice(0, 3).join(''));
+        return segs.join(',').split('').reverse().join('');
+      }
+
+      const digitalFlopConfig = ref({
+        number: [1000],
+        content: '{nt}个',
+        formatter,
+      });
+
+      onMounted(() => {
+        let timer = null;
+        timer = setInterval(() => {
+          digitalFlopConfig.value.number[0] += Math.random() * 1000;
+          if (digitalFlopConfig.value.number[0] >= 15000) clearInterval(timer);
+        }, 2500);
+      });
+
+      const chartsOption = reactive({
+        title: {
+          text: '剩余油量表',
+          style: {
+            fill: '#fff',
+          },
+        },
+        series: [
+          {
+            type: 'gauge',
+            data: [{ name: 'itemA', value: 55 }],
+            center: ['50%', '55%'],
+            axisLabel: {
+              formatter: '{value}%',
+              style: {
+                fill: '#fff',
+              },
+            },
+            axisTick: {
+              style: {
+                stroke: '#fff',
+              },
+            },
+            animationCurve: 'easeInOutBack',
+          },
+        ],
+      });
 
       return {
         borderColor: ref([]),
@@ -350,6 +422,327 @@
         clickHandler: (ev) => {
           console.log(ev);
         },
+        capsuleChartConfig: ref({
+          data: [
+            {
+              name: '南阳',
+              value: 288,
+            },
+            {
+              name: '周口',
+              value: 123,
+            },
+            {
+              name: '漯河',
+              value: 98,
+            },
+            {
+              name: '郑州',
+              value: 75,
+            },
+            {
+              name: '西峡',
+              value: 66,
+            },
+          ],
+          colors: ['#e062ae', '#fb7293', '#e690d1', '#32c5e9', '#96bfff'],
+          unit: '💰',
+          // showValue: true,
+        }),
+        activeRingChartConf: ref({
+          radius: 100, //  环半径 50% | 100
+          activeRadius: 120, // 环半径(动态)
+          lineWidth: 30,
+          // activeTimeGap: 3000 // 切换间隔
+          digitalFlopStyle: {
+            fill: 'pink',
+            fontSize: 28,
+          },
+          data: [
+            {
+              name: '杭州',
+              value: 98,
+            },
+            {
+              name: '金华',
+              value: 150,
+            },
+            {
+              name: '宁波',
+              value: 62,
+            },
+            {
+              name: '太原',
+              value: 54,
+            },
+          ],
+        }),
+        digitalFlopConfig,
+        chartsOption,
+        flylineChartConfig: ref({
+          centerPoint: [0.48, 0.35],
+          points: [
+            {
+              position: [0.52, 0.235],
+              text: '新乡',
+            },
+            {
+              position: [0.43, 0.29],
+              text: '焦作',
+            },
+            {
+              position: [0.59, 0.35],
+              text: '开封',
+            },
+            {
+              position: [0.53, 0.47],
+              text: '许昌',
+            },
+            {
+              position: [0.45, 0.54],
+              text: '平顶山',
+            },
+            {
+              position: [0.36, 0.38],
+              text: '洛阳',
+            },
+            {
+              position: [0.62, 0.55],
+              text: '周口',
+            },
+            {
+              position: [0.56, 0.56],
+              text: '漯河',
+            },
+            {
+              position: [0.37, 0.66],
+              text: '南阳',
+            },
+            {
+              position: [0.55, 0.81],
+              text: '信阳',
+            },
+            {
+              position: [0.55, 0.67],
+              text: '驻马店',
+            },
+            {
+              position: [0.37, 0.29],
+              text: '济源',
+            },
+            {
+              position: [0.2, 0.36],
+              text: '三门峡',
+            },
+            {
+              position: [0.76, 0.41],
+              text: '商丘',
+            },
+            {
+              position: [0.59, 0.18],
+              text: '鹤壁',
+            },
+            {
+              position: [0.68, 0.17],
+              text: '濮阳',
+            },
+            {
+              position: [0.59, 0.1],
+              text: '安阳',
+            },
+          ],
+          // bgImgUrl: mapImg,
+          // centerPointImg: {
+          //   url: mapCenterPoint,
+          // },
+          // pointsImg: {
+          //   url: mapPoint,
+          // },
+        }),
+        flylineChartEnhancedConfig: ref({
+          points: [
+            {
+              name: '郑州',
+              coordinate: [0.48, 0.35],
+              halo: {
+                show: true,
+              },
+              icon: {
+                // src: mapCenterPoint,
+                width: 30,
+                height: 30,
+              },
+              text: {
+                show: false,
+              },
+            },
+            {
+              name: '新乡',
+              coordinate: [0.52, 0.23],
+            },
+            {
+              name: '焦作',
+              coordinate: [0.43, 0.29],
+            },
+            {
+              name: '开封',
+              coordinate: [0.59, 0.35],
+            },
+            {
+              name: '许昌',
+              coordinate: [0.53, 0.47],
+            },
+            {
+              name: '平顶山',
+              coordinate: [0.45, 0.54],
+            },
+            {
+              name: '洛阳',
+              coordinate: [0.36, 0.38],
+            },
+            {
+              name: '周口',
+              coordinate: [0.62, 0.55],
+              halo: {
+                show: true,
+                color: '#8378ea',
+              },
+            },
+            {
+              name: '漯河',
+              coordinate: [0.56, 0.56],
+            },
+            {
+              name: '南阳',
+              coordinate: [0.37, 0.66],
+              halo: {
+                show: true,
+                color: '#37a2da',
+              },
+            },
+            {
+              name: '信阳',
+              coordinate: [0.55, 0.81],
+            },
+            {
+              name: '驻马店',
+              coordinate: [0.55, 0.67],
+            },
+            {
+              name: '济源',
+              coordinate: [0.37, 0.29],
+            },
+            {
+              name: '三门峡',
+              coordinate: [0.2, 0.36],
+            },
+            {
+              name: '商丘',
+              coordinate: [0.76, 0.41],
+            },
+            {
+              name: '鹤壁',
+              coordinate: [0.59, 0.18],
+            },
+            {
+              name: '濮阳',
+              coordinate: [0.68, 0.17],
+            },
+            {
+              name: '安阳',
+              coordinate: [0.59, 0.1],
+            },
+          ],
+          lines: [
+            {
+              source: '新乡',
+              target: '郑州',
+            },
+            {
+              source: '焦作',
+              target: '郑州',
+            },
+            {
+              source: '开封',
+              target: '郑州',
+            },
+            {
+              source: '周口',
+              target: '郑州',
+              color: '#fb7293',
+              width: 2,
+            },
+            {
+              source: '南阳',
+              target: '郑州',
+              color: '#fb7293',
+              width: 2,
+            },
+            {
+              source: '济源',
+              target: '郑州',
+            },
+            {
+              source: '三门峡',
+              target: '郑州',
+            },
+            {
+              source: '商丘',
+              target: '郑州',
+            },
+            {
+              source: '鹤壁',
+              target: '郑州',
+            },
+            {
+              source: '濮阳',
+              target: '郑州',
+            },
+            {
+              source: '安阳',
+              target: '郑州',
+            },
+            {
+              source: '许昌',
+              target: '南阳',
+              color: '#37a2da',
+            },
+            {
+              source: '平顶山',
+              target: '南阳',
+              color: '#37a2da',
+            },
+            {
+              source: '洛阳',
+              target: '南阳',
+              color: '#37a2da',
+            },
+            {
+              source: '驻马店',
+              target: '周口',
+              color: '#8378ea',
+            },
+            {
+              source: '信阳',
+              target: '周口',
+              color: '#8378ea',
+            },
+            {
+              source: '漯河',
+              target: '周口',
+              color: '#8378ea',
+            },
+          ],
+          // icon: {
+          //   show: true,
+          //   src: mapPoint,
+          // },
+          // text: {
+          //   show: true,
+          // },
+          // k: 0.5,
+          // bgImgSrc: mapImg,
+        }),
       };
     },
   });
